@@ -1,11 +1,11 @@
 <?php
 /*
     Extension Name: Plugin Installer
-    Extension URI:
+    Extension URI: https://github.com/parallelus/Plugin-Installer-for-Runway
     Version: 0.8.2
-    Description: 
-    Author: 
-    Author URI: 
+    Description: Package and auto-install plugins with themes.
+    Author: Parallelus
+    Author URI: http://runwaywp.com
 */
 
 #-----------------------------------------------------------------
