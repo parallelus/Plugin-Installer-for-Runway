@@ -1,4 +1,6 @@
-Plugin-Installer-for-Runway
+Plugin Installer for Runway
 ===========================
 
-An extension for the Runway framework to auto-install and package plugins with WordPress themes.
+An extension for the <a href="https://github.com/parallelus/Runway-Framework">Runway</a> framework to auto-install and package plugins with WordPress themes.
+
+https://github.com/parallelus/Runway-Framework
