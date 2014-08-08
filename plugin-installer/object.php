@@ -106,18 +106,18 @@ class Plugin_Installer_Object extends Runway_Object {
 
 		$zip = new ZipArchive;
 		$info = pathinfo($plug_file);
-		if($zip->open($plugins_zip_path . $plug_file)) {
- 			for ($i = 0; $i < $zip->numFiles; $i++) {
-                $source = $zip->getNameIndex($i);
-                if(strpos($source, '.php') !== false) {
-                    $file_content = $zip->getFromName($source);
-                    if(strpos($file_content, 'Plugin Name')) {
-                    	$main_file = $source;                    	
-                        $file_data = $file_content;
-                    }
-                }                
-            }
- 		}
+		if ($zip->open($plugins_zip_path . $plug_file)) {
+			for ($i = 0; $i < $zip->numFiles; $i++) {
+				$source = $zip->getNameIndex($i);
+				if (strpos($source, '.php') !== false) {
+					$file_content = $zip->getFromName($source);
+					if (strpos($file_content, 'Plugin Name')) {
+						$main_file = $source;
+						$file_data = $file_content;
+					}
+				}
+			}
+		}
  		$zip->close();	
 		
 		if(!function_exists('WP_Filesystem'))

@@ -236,7 +236,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 				$permissions = substr(sprintf('%o', fileperms(dirname(__FILE__).'/extensions')), -4);
 				if($permissions < '0755') 
 					chmod(dirname(__FILE__).'/extensions', 0755);
-
+				
 				$z = new ZipArchive(); 
 				if($z->open($zipPath, ZIPARCHIVE::CREATE)){
 					$z->addEmptyDir($extension);

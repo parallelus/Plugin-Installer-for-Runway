@@ -19,7 +19,7 @@
 		} break;
 
 		case 'activate': {
-			$tgm->do_plugin_install();
+			$tgm->do_plugin_activate();
 			echo $redirect;
 		} break;
 
@@ -43,7 +43,6 @@
 		case 'add-plugin':{
 			if ( ! isset($_POST['plug-submit'] ) ) {
 				include_once 'views/add-plugin.php';
-
 			}
 			else {
 				if ( empty( $_POST ) || !wp_verify_nonce( $_POST['plugin-upload-field'], 'plugin-upload-action' ) ) { 
@@ -52,7 +51,8 @@
 				}
 				else { 
 					if ( isset( $_FILES['plugzip']['name'] ) && $_FILES['plugzip']['name'] != '' ) {
-						$file_ext = array_pop( explode( '.', $_FILES['plugzip']['name'] ) );
+						$exploded = explode( '.', $_FILES['plugzip']['name'] );
+						$file_ext = array_pop( $exploded );
 						if ( $file_ext == 'zip' ) {
 							$plugin_installer->load_new_plugin( $_FILES['plugzip'] );
 							$tgm->install_plugins_page();
