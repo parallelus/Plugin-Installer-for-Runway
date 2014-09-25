@@ -1,9 +1,26 @@
+<?php
+	$navText = array();
+	switch ($this->navigation) {
+		case 'add-plugin':
+			$navText = array(__( 'Add New', 'framework' ));
+			break;
+	}
+	
+	if (!empty($navText)) {
+		$this->navigation_bar( $navText );
+	} else {
+		echo '<p>&nbsp;</p>';
+	}
+?>
+
+<?php if(!in_array($this->navigation, array('add-plugin'))) {?>
 <h2 class="nav-tab-wrapper tab-controlls" style="padding-top: 9px;">
 	<a href="<?php echo $this->self_url(); ?>" class="nav-tab <?php if($this->navigation == '') {echo "nav-tab-active";} ?>"><?php _e('Plugins', 'framework') ?></a>
 	<?php if (IS_CHILD && get_template() == 'runway-framework') { ?>
 		<a href="<?php echo $this->self_url('extensions'); ?>" class="nav-tab <?php if($this->navigation == 'extensions') {echo "nav-tab-active";} ?>"><?php _e('Extensions', 'framework') ?></a>
 	<?php } ?>
 </h2>
+<?php } ?>
 <?php
 	global $plugin_installer, $themePlugins;
 	$tgm = new TGM_Plugin_Activation;
