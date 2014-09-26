@@ -94,6 +94,13 @@
 			$vals['exts'] = $extm->get_extensions_list( $extm->extensions_dir );
 			$this->view('extensions', false, $vals);
 		} break;
+	
+		case 'add-plugin-by-url': {
+			if(isset($this->plugin_install_url_message) && $this->plugin_install_url_message != "") {
+				$info_message = $this->plugin_install_url_message;
+			}
+			include_once 'views/add-plugin.php';
+		} break;
 
 		default : { 
 			$tgm->install_plugins_page();

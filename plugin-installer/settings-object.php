@@ -28,6 +28,31 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 		if ( isset( $_REQUEST['navigation'] ) && !empty( $_REQUEST['navigation'] ) ) { 
 			global $plugin_installer_admin;
 			$plugin_installer_admin->navigation = $_REQUEST['navigation'];
+			
+			if($plugin_installer_admin->navigation == 'add-plugin-by-url') {
+				$parsed_url = parse_url($_POST['plugin_url']);
+			
+				if(!filter_var($_POST['plugin_url'], FILTER_VALIDATE_URL) || !isset($parsed_url['host']) || (isset($parsed_url['host']) && $parsed_url['host'] != 'wordpress.org')) {
+					$plugin_installer_admin->plugin_install_url_message = __('Enter valid url to plugin.', 'framework');
+				}
+				else {
+					$splitted_path = explode('/', $parsed_url['path']);
+					if($splitted_path[count($splitted_path) - 1] != '')
+						$plugin_slug = $splitted_path[count($splitted_path) - 1];
+					else if(isset($splitted_path[count($splitted_path) - 2])) 
+						$plugin_slug = $splitted_path[count($splitted_path) - 2];
+					else {
+						$plugin_slug = "";
+						$plugin_installer_admin->plugin_install_url_message = __('Enter valid url to plugin.', 'framework');
+					}
+
+					if($plugin_slug != "") {
+						$url = wp_nonce_url(self_admin_url('update.php?action=install-plugin&plugin=' . $plugin_slug), 'install-plugin_' . $plugin_slug);
+						wp_redirect(str_replace('&amp;', '&', $url));
+						die();
+					}
+				}
+			}
 		}
 	}
 
