@@ -713,20 +713,20 @@ if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
 							if ( $external_url && preg_match( '|^http(s)?://|', $external_url ) ) {
 								$linked_plugin_groups[] = '<a href="' . esc_url( $external_url ) . '" title="' . rf__($plugin_group_single_name) . '" target="_blank">' . rf__($plugin_group_single_name) . '</a>';
 							}
-							elseif ( ! $source || preg_match( '|^http://wordpress.org/extend/plugins/|', $source ) ) {
-								$url = add_query_arg(
-									array(
-										'tab'       => 'plugin-information',
-										'plugin'    => $this->_get_plugin_data_from_name( $plugin_group_single_name ),
-										'TB_iframe' => 'true',
-										'width'     => '640',
-										'height'    => '500',
-									),
-									admin_url( 'plugin-install.php' )
-								);
+							// elseif ( ! $source || preg_match( '|^http://wordpress.org/extend/plugins/|', $source ) ) {
+							// 	$url = add_query_arg(
+							// 		array(
+							// 			'tab'       => 'plugin-information',
+							// 			'plugin'    => $this->_get_plugin_data_from_name( $plugin_group_single_name ),
+							// 			'TB_iframe' => 'true',
+							// 			'width'     => '640',
+							// 			'height'    => '500',
+							// 		),
+							// 		admin_url( 'plugin-install.php' )
+							// 	);
 
-								$linked_plugin_groups[] = '<a href="' . esc_url( $url ) . '" class="thickbox" title="' . rf__($plugin_group_single_name) . '">' . rf__($plugin_group_single_name) . '</a>';
-							}
+							// 	$linked_plugin_groups[] = '<a href="' . esc_url( $url ) . '" class="thickbox" title="' . rf__($plugin_group_single_name) . '">' . rf__($plugin_group_single_name) . '</a>';
+							// }
 							else {
 								$linked_plugin_groups[] = $plugin_group_single_name; // No hyperlink
 							}
@@ -1146,20 +1146,20 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 					if ( $external_url && preg_match( '|^http(s)?://|', $external_url ) ) {
 						$table_data[$i]['plugin'] = '<strong><a href="' . esc_url( $external_url ) . '" title="' . rf__($plugin['name']) . '" target="_blank">' . rf__($plugin['name']) . '</a></strong>';
 					}
-					elseif ( ! $source || preg_match( '|^http://wordpress.org/extend/plugins/|', $source ) ) {
-						$url = add_query_arg(
-							array(
-								'tab'       => 'plugin-information',
-								'plugin'    => $this->_get_plugin_data_from_name( $plugin['name'] ),
-								'TB_iframe' => 'true',
-								'width'     => '640',
-								'height'    => '500',
-							),
-							admin_url( 'plugin-install.php' )
-						);
+					// elseif ( ! $source || preg_match( '|^http://wordpress.org/extend/plugins/|', $source ) ) {
+					// 	$url = add_query_arg(
+					// 		array(
+					// 			'tab'       => 'plugin-information',
+					// 			'plugin'    => $this->_get_plugin_data_from_name( $plugin['name'] ),
+					// 			'TB_iframe' => 'true',
+					// 			'width'     => '640',
+					// 			'height'    => '500',
+					// 		),
+					// 		admin_url( 'plugin-install.php' )
+					// 	);
 
-						$table_data[$i]['plugin'] = '<strong><a href="' . esc_url( $url ) . '" class="thickbox" title="' . rf__($plugin['name']) . '">' . rf__($plugin['name']) . '</a></strong>';
-					}
+					// 	$table_data[$i]['plugin'] = '<strong><a href="' . esc_url( $url ) . '" class="thickbox" title="' . rf__($plugin['name']) . '">' . rf__($plugin['name']) . '</a></strong>';
+					// }
 					else {
 						$table_data[$i]['plugin'] = '<strong>' . rf__($plugin['name']) . '</strong>'; // No hyperlink
 					}

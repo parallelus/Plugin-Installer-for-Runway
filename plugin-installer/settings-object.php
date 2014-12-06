@@ -48,6 +48,10 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 
 					if($plugin_slug != "") {
 						$url = wp_nonce_url(self_admin_url('update.php?action=install-plugin&plugin=' . $plugin_slug), 'install-plugin_' . $plugin_slug);
+						$this->plugin_installer_options = $plugin_installer_admin->get_options();
+						$this->plugin_installer_options['plugin_wp_repository'][$plugin_slug] = array('slug' => $plugin_slug);
+						$this->update_options();
+
 						wp_redirect(str_replace('&amp;', '&', $url));
 						die();
 					}
@@ -105,7 +109,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 				$source = get_template_directory() .'/extensions/plugin-installer/extensions/'. $plugin_install_file;				
 			}
 			$required = 'true';			
-			
+
 			if ( isset( $this->plugin_installer_options ) && 
 				isset( $this->plugin_installer_options['plugin_options'] ) 
 				&& isset( $this->plugin_installer_options['plugin_options'][$plugin_name] )
@@ -121,8 +125,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 				'name'     				=> $plugin_name, // The plugin name
 				'slug'     				=> $plugin_slug, // The plugin slug (typically the folder name)
 				'source'   				=> $source, // The plugin source
-				'required' 				=> $required
-				, // If false, the plugin is only 'recommended' instead of required
+				'required' 				=> $required, // If false, the plugin is only 'recommended' instead of required
 				'version' 				=> $plugin_version, // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
 				'file_path' 			=> $plugin_slug, // The plugin name
 				'force_activation' 		=> true, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
