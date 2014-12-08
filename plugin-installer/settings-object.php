@@ -86,7 +86,6 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
   		update_option($this->option_key, $this->plugin_installer_options);  		
   	}
 
-
   	function register_plugins_in_dir(){
   		#-----------------------------------------------------------------
 		# Register a plugin
@@ -366,6 +365,19 @@ if ($"."current_extensions == false || ($"."current_extensions != false && isset
 		  } 
 		} 
 		closedir($handle); 
-	} 	
+	} 
+
+  	public function delete_from_list( $plugin_info ) {
+		global $themePlugins, $wp_filesystem;
+
+		if(IS_CHILD) {
+			if(file_exists($plugin_info['source'])) {
+				$wp_filesystem->delete($plugin_info['source']);
+			}
+  			unset($this->plugin_installer_options['plugin_options'][$plugin_info['name']]);
+  			unset($this->plugin_installer_options['plugin_wp_repository'][$plugin_info['slug']]);
+			$this->update_options();		
+		}
+  	}
 }
 ?>

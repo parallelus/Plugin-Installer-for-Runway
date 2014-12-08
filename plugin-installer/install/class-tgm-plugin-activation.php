@@ -1134,8 +1134,8 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 			if ( is_array($themePlugins) ) {
             	foreach ( $themePlugins as $plugin ) {
            	
-					if ( is_plugin_active( $plugin['file_path'] ) ) 
-						continue; // No need to display plugins if they are installed and activated
+					//if ( is_plugin_active( $plugin['file_path'] ) ) 
+						//continue; // No need to display plugins if they are installed and activated
 
 					$table_data[$i]['sanitized_plugin'] = $plugin['name'];
 					$table_data[$i]['slug'] = $this->_get_plugin_data_from_name( $plugin['name'] );
@@ -1190,6 +1190,8 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Not Installed', TGM_Plugin_Activation::$instance->domain ) );
 					elseif ( is_plugin_inactive( $plugin['file_path'] ) )
 						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Installed But Not Activated', TGM_Plugin_Activation::$instance->domain ) );
+					else
+						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Installed And Activated', TGM_Plugin_Activation::$instance->domain ) );
 
 					$table_data[$i]['file_path'] = $plugin['file_path'];
 					$table_data[$i]['url'] = isset( $plugin['source'] ) ? $plugin['source'] : 'repo';
@@ -1333,6 +1335,27 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 					),
 				);
 			}
+
+			else {
+
+				$actions = array(
+					'' => sprintf(
+						' <a href="%1$s" title="Delete from the list %2$s">Delete from the list</a>',
+						add_query_arg(
+							array(
+								'page'                 => TGM_Plugin_Activation::$instance->menu,
+								'action'  			   => 'delete-from-list', 								
+								'plugin'               => $item['slug'],
+								'plugin_name'          => $item['sanitized_plugin'],
+								'plugin_source'        => $item['url'],
+								'tgmpa-activate'       => 'activate-plugin',
+								'tgmpa-activate-nonce' => wp_create_nonce( 'tgmpa-activate' ), 							),
+							admin_url( TGM_Plugin_Activation::$instance->parent_url_general_slug )
+						),
+						$item['sanitized_plugin']
+					),
+				);
+			}			
 			return sprintf( '%1$s %2$s', $item['plugin'], $this->row_actions( $actions ) );
 
 		}

@@ -110,7 +110,7 @@ class Plugin_Installer_Object extends Runway_Object {
 					$plugin_wp_repository[$slug]['source'] = $plugin_wp_repository[$slug]['PluginURI'];
 					$plugin_wp_repository[$slug]['slug'] = $file[0];
 					$plugin_wp_repository[$slug]['file'] = '';
-					$plugin_wp_repository[$slug]['install_version'] = $plugin_wp_repository[$slug]['Version'];;
+					$plugin_wp_repository[$slug]['install_version'] = $plugin_wp_repository[$slug]['Version'];
 				}	
 			}
 		}

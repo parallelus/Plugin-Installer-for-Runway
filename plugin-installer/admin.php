@@ -22,13 +22,13 @@
 </h2>
 <?php } ?>
 <?php
-	global $plugin_installer, $themePlugins;
+	global $plugin_installer, $plugin_installer_admin, $themePlugins;
 	$tgm = new TGM_Plugin_Activation;
 
     $link = admin_url('admin.php?page=plugin-installer');
     $redirect = '<script type="text/javascript">window.location = "'.$link.'";</script>';	
 
-    $action = isset( $_GET['action'] )? $_GET['action'] : '';				
+    $action = isset( $_GET['action'] )? $_GET['action'] : '';	
 	switch ($action) {				
 		case 'install': {
 			$tgm->do_plugin_install();
@@ -38,6 +38,16 @@
 		case 'activate': {
 			$tgm->do_plugin_activate();
 			echo $redirect;
+		} break;
+
+		case 'delete-from-list':{out($_GET);
+			if( isset($_GET['plugin_source']) && isset($_GET['plugin_name']) && isset($_GET['plugin']) ) {
+					$plugin_info = array('name'   => $_GET['plugin_name'],
+										 'slug' => substr($_GET['plugin'], 0, strpos($_GET['plugin'], '/')),
+										 'source' => $_GET['plugin_source']);
+					$plugin_installer_admin->delete_from_list($plugin_info);
+					echo $redirect;
+			}
 		} break;
 
 		case 'install-extension':{
