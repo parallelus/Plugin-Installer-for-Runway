@@ -100,17 +100,19 @@ class Plugin_Installer_Object extends Runway_Object {
 		}
 
 		$plugin_wp_repository = array();
-		foreach($this->plugin_installer_options['plugin_wp_repository'] as $slug => $val) {
-			if( !empty($slug) && in_array($slug.'/', $plugin_slug_installed)) {
-				$file = array_keys($plugin_slug_installed, $slug.'/');
-				$plugin_wp_repository[$slug] = get_plugin_data(WP_PLUGIN_DIR .'/'. $file[0]);
-				$plugin_wp_repository[$slug]['Title'] = $plugin_wp_repository[$slug]['Name'];
-				$plugin_wp_repository[$slug]['name'] = $plugin_wp_repository[$slug]['Name'];
-				$plugin_wp_repository[$slug]['source'] = $plugin_wp_repository[$slug]['PluginURI'];
-				$plugin_wp_repository[$slug]['slug'] = $file[0];
-				$plugin_wp_repository[$slug]['file'] = '';
-				$plugin_wp_repository[$slug]['install_version'] = $plugin_wp_repository[$slug]['Version'];;
-			}	
+		if(isset($this->plugin_installer_options['plugin_wp_repository']) && !empty($this->plugin_installer_options['plugin_wp_repository'])) {
+			foreach($this->plugin_installer_options['plugin_wp_repository'] as $slug => $val) {
+				if( !empty($slug) && in_array($slug.'/', $plugin_slug_installed)) {
+					$file = array_keys($plugin_slug_installed, $slug.'/');
+					$plugin_wp_repository[$slug] = get_plugin_data(WP_PLUGIN_DIR .'/'. $file[0]);
+					$plugin_wp_repository[$slug]['Title'] = $plugin_wp_repository[$slug]['Name'];
+					$plugin_wp_repository[$slug]['name'] = $plugin_wp_repository[$slug]['Name'];
+					$plugin_wp_repository[$slug]['source'] = $plugin_wp_repository[$slug]['PluginURI'];
+					$plugin_wp_repository[$slug]['slug'] = $file[0];
+					$plugin_wp_repository[$slug]['file'] = '';
+					$plugin_wp_repository[$slug]['install_version'] = $plugin_wp_repository[$slug]['Version'];;
+				}	
+			}
 		}
 
 		return $plugin_wp_repository;
