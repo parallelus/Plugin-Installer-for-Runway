@@ -40,7 +40,7 @@
 			echo $redirect;
 		} break;
 
-		case 'delete-from-list':{out($_GET);
+		case 'delete-from-list':{
 			if( isset($_GET['plugin_source']) && isset($_GET['plugin_name']) && isset($_GET['plugin']) ) {
 					$plugin_info = array('name'   => $_GET['plugin_name'],
 										 'slug' => substr($_GET['plugin'], 0, strpos($_GET['plugin'], '/')),

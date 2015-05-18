@@ -1296,8 +1296,8 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 				$actions = array(
 					'install' => sprintf(
 						'<a href="%1$s" title="'. __('Install', 'framework') .' %2$s">'. __('Install', 'framework') .'</a>',
-						wp_nonce_url(
-							esc_url(
+						esc_url(
+							wp_nonce_url(
 								add_query_arg(
 									array(
 										'page'          => TGM_Plugin_Activation::$instance->menu,
@@ -1308,9 +1308,9 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 										'tgmpa-install' => 'install-plugin', 
 									),
 									admin_url( TGM_Plugin_Activation::$instance->parent_url_general_slug )
-								)
-							),
-							'tgmpa-install'
+								),
+								'tgmpa-install'
+							)
 						),
 						$item['sanitized_plugin']
 					),
@@ -1343,27 +1343,29 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 			}
 
 			else {
-
-				$actions = array(
-					'' => sprintf(
-						' <a href="%1$s" title="'. __('Delete from the list', 'framework') .' %2$s">'. __('Delete from the list', 'framework') .'</a>',
-						esc_url( 
-							add_query_arg(
-								array(
-									'page'                 => TGM_Plugin_Activation::$instance->menu,
-									'action'  			   => 'delete-from-list', 								
-									'plugin'               => $item['slug'],
-									'plugin_name'          => $item['sanitized_plugin'],
-									'plugin_source'        => $item['url'],
-									'tgmpa-activate'       => 'activate-plugin',
-									'tgmpa-activate-nonce' => wp_create_nonce( 'tgmpa-activate' ),
-								),
-								admin_url( TGM_Plugin_Activation::$instance->parent_url_general_slug )
-							)
+				if (IS_CHILD) {	
+					$actions = array(
+						'' => sprintf(
+							' <a href="%1$s" title="'. __('Delete from the list', 'framework') .' %2$s">'. __('Delete from the list', 'framework') .'</a>',
+							esc_url( 
+								add_query_arg(
+									array(
+										'page'                 => TGM_Plugin_Activation::$instance->menu,
+										'action'  			   => 'delete-from-list', 								
+										'plugin'               => $item['slug'],
+										'plugin_name'          => $item['sanitized_plugin'],
+										'plugin_source'        => $item['url'],
+										'tgmpa-activate'       => 'activate-plugin',
+										'tgmpa-activate-nonce' => wp_create_nonce( 'tgmpa-activate' ),
+									),
+									admin_url( TGM_Plugin_Activation::$instance->parent_url_general_slug )
+								)
+							),
+							$item['sanitized_plugin']
 						),
-						$item['sanitized_plugin']
-					),
-				);
+					);
+				} else
+					$actions = array();
 			}			
 			return sprintf( '%1$s %2$s', $item['plugin'], $this->row_actions( $actions ) );
 
