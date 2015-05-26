@@ -1326,28 +1326,31 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 			}
 
 			else {
-
-				$actions = array(
-					'' => sprintf(
-						' <a href="%1$s" title="'. __('Delete from the list', 'framework') .' %2$s">'. __('Delete from the list', 'framework') .'</a>',
-						esc_url( 
-							add_query_arg(
-								array(
-									'page'                 => Runway_Plugin_Installer::$instance->menu,
-									'action'  			   => 'delete-from-list', 								
-									'plugin'               => $item['slug'],
-									'plugin_name'          => $item['sanitized_plugin'],
-									'plugin_source'        => $item['url'],
-									'tgmpa-activate'       => 'activate-plugin',
-									'tgmpa-activate-nonce' => wp_create_nonce( 'tgmpa-activate' ),
-								),
-								admin_url( Runway_Plugin_Installer::$instance->parent_url_general_slug )
-							)
+				if (IS_CHILD) {
+					$actions = array(
+						'' => sprintf(
+							' <a href="%1$s" title="'. __('Delete from the list', 'framework') .' %2$s">'. __('Delete from the list', 'framework') .'</a>',
+							esc_url( 
+								add_query_arg(
+									array(
+										'page'                 => Runway_Plugin_Installer::$instance->menu,
+										'action'  			   => 'delete-from-list', 								
+										'plugin'               => $item['slug'],
+										'plugin_name'          => $item['sanitized_plugin'],
+										'plugin_source'        => $item['url'],
+										'tgmpa-activate'       => 'activate-plugin',
+										'tgmpa-activate-nonce' => wp_create_nonce( 'tgmpa-activate' ),
+									),
+									admin_url( Runway_Plugin_Installer::$instance->parent_url_general_slug )
+								)
+							),
+							$item['sanitized_plugin']
 						),
-						$item['sanitized_plugin']
-					),
-				);
-			}			
+					);
+				} else {
+					$actions = array();
+				}
+			}
 			return sprintf( '%1$s %2$s', $item['plugin'], $this->row_actions( $actions ) );
 
 		}
