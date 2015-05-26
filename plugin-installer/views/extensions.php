@@ -1,4 +1,4 @@
-<form action="<?php echo $this->self_url('extensions'); ?>&action=install-extension" method="post"><br>
+<form action="<?php echo esc_url($this->self_url('extensions') .'&action=install-extension'); ?>" method="post"><br>
 <table class="wp-list-table widefat plugins">
 	<thead>
 		<tr>
@@ -16,7 +16,7 @@ if ( !empty( $exts ) ):
 		<?php if($extm->is_activated( $ext )): ?>
 		<tr class="inactive">
 			<th class="check-column">
-				<input type="checkbox" name="ext_chk[]" value="<?php echo $ext; ?>" />
+				<input type="checkbox" name="ext_chk[]" value="<?php echo esc_attr($ext); ?>" />
 			</th>
 			<td class="plugin-title">
 				<strong><?php rf_e($ext_info['Name']); ?></strong>
@@ -31,18 +31,18 @@ if ( !empty( $exts ) ):
 					if ( $ext_info['Author'] ) {
 						$author = ' | By '. $ext_info['Author'];
 						if ( $ext_info['AuthorURI'] ) {
-							$author = ' | By <a href="'. $ext_info['AuthorURI'] .'" title="'.__('Visit author homepage', 'framework').'">'. $ext_info['Author'] .'</a>';
+							$author = ' | By <a href="'. esc_url($ext_info['AuthorURI']) .'" title="'.__('Visit author homepage', 'framework').'">'. $ext_info['Author'] .'</a>';
 						}
 					}
 					else {
 						$author = ' | By Unknown';	
 					}
-					$plugin_link = ( $ext_info['ExtensionURI'] ) ? ' | <a href="'. $ext_info['ExtensionURI'] .'" title="'.__('Visit plugin site', 'framework').'">'.__('Visit plugin site', 'framework').'</a>' : '';
-					$info = '<div class="'. $class .' second plugin-version-author-uri">'. $version . $author . $plugin_link .'</div>';
+					$plugin_link = ( $ext_info['ExtensionURI'] ) ? ' | <a href="'. esc_url($ext_info['ExtensionURI']) .'" title="'. esc_attr( __('Visit plugin site', 'framework') ).'">'.__('Visit plugin site', 'framework').'</a>' : '';
+					$info = '<div class="'. esc_attr($class) .' second plugin-version-author-uri">'. $version . $author . $plugin_link .'</div>';
 
 					// Print details
-					echo $description;
-					echo $info;
+					echo  $description; // escaped above
+					echo  $info; // escaped above
 				?>
 			</td>
 		</tr>

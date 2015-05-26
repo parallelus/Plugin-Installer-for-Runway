@@ -85,7 +85,37 @@ class Plugin_Installer_Object extends Runway_Object {
             	$plugins[$key] = $this->get_plugin_data($info['basename'], true);
 			}
 		}
+
+		$plugins = array_merge($plugins, $this->get_all_plugins_wp_repository());
+
 		return $plugins;
+	}
+
+	function get_all_plugins_wp_repository( ) {
+
+		$plugin_slug_installed = array();
+		$plugins = get_plugins();		
+		foreach($plugins as $slug => $plugin) {
+			$plugin_slug_installed[$slug] = substr($slug, 0, strpos($slug, '/') + 1);
+		}
+
+		$plugin_wp_repository = array();
+		if(isset($this->plugin_installer_options['plugin_wp_repository']) && !empty($this->plugin_installer_options['plugin_wp_repository'])) {
+			foreach($this->plugin_installer_options['plugin_wp_repository'] as $slug => $val) {
+				if( !empty($slug) && in_array($slug.'/', $plugin_slug_installed)) {
+					$file = array_keys($plugin_slug_installed, $slug.'/');
+					$plugin_wp_repository[$slug] = get_plugin_data(WP_PLUGIN_DIR .'/'. $file[0]);
+					$plugin_wp_repository[$slug]['Title'] = $plugin_wp_repository[$slug]['Name'];
+					$plugin_wp_repository[$slug]['name'] = $plugin_wp_repository[$slug]['Name'];
+					$plugin_wp_repository[$slug]['source'] = $plugin_wp_repository[$slug]['PluginURI'];
+					$plugin_wp_repository[$slug]['slug'] = $file[0];
+					$plugin_wp_repository[$slug]['file'] = '';
+					$plugin_wp_repository[$slug]['install_version'] = $plugin_wp_repository[$slug]['Version'];
+				}	
+			}
+		}
+
+		return $plugin_wp_repository;
 	}
 
 	function get_plugin_data( $plug_file, $is_ext = false ) {

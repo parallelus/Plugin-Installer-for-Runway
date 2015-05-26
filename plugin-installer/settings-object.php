@@ -28,6 +28,35 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 		if ( isset( $_REQUEST['navigation'] ) && !empty( $_REQUEST['navigation'] ) ) { 
 			global $plugin_installer_admin;
 			$plugin_installer_admin->navigation = $_REQUEST['navigation'];
+			
+			if($plugin_installer_admin->navigation == 'add-plugin-by-url') {
+				$parsed_url = parse_url($_POST['plugin_url']);
+			
+				if(!filter_var($_POST['plugin_url'], FILTER_VALIDATE_URL) || !isset($parsed_url['host']) || (isset($parsed_url['host']) && $parsed_url['host'] != 'wordpress.org')) {
+					$plugin_installer_admin->plugin_install_url_message = __('Enter valid url to plugin.', 'framework');
+				}
+				else {
+					$splitted_path = explode('/', $parsed_url['path']);
+					if($splitted_path[count($splitted_path) - 1] != '')
+						$plugin_slug = $splitted_path[count($splitted_path) - 1];
+					else if(isset($splitted_path[count($splitted_path) - 2])) 
+						$plugin_slug = $splitted_path[count($splitted_path) - 2];
+					else {
+						$plugin_slug = "";
+						$plugin_installer_admin->plugin_install_url_message = __('Enter valid url to plugin.', 'framework');
+					}
+
+					if($plugin_slug != "") {
+						$url = wp_nonce_url(self_admin_url('update.php?action=install-plugin&plugin=' . $plugin_slug), 'install-plugin_' . $plugin_slug);
+						$this->plugin_installer_options = $plugin_installer_admin->get_options();
+						$this->plugin_installer_options['plugin_wp_repository'][$plugin_slug] = array('slug' => $plugin_slug);
+						$this->update_options();
+
+						wp_redirect(str_replace('&amp;', '&', $url));
+						die();
+					}
+				}
+			}
 		}
 	}
 
@@ -57,7 +86,6 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
   		update_option($this->option_key, $this->plugin_installer_options);  		
   	}
 
-
   	function register_plugins_in_dir(){
   		#-----------------------------------------------------------------
 		# Register a plugin
@@ -80,7 +108,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 				$source = get_template_directory() .'/extensions/plugin-installer/extensions/'. $plugin_install_file;				
 			}
 			$required = 'true';			
-			
+
 			if ( isset( $this->plugin_installer_options ) && 
 				isset( $this->plugin_installer_options['plugin_options'] ) 
 				&& isset( $this->plugin_installer_options['plugin_options'][$plugin_name] )
@@ -96,8 +124,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 				'name'     				=> $plugin_name, // The plugin name
 				'slug'     				=> $plugin_slug, // The plugin slug (typically the folder name)
 				'source'   				=> $source, // The plugin source
-				'required' 				=> $required
-				, // If false, the plugin is only 'recommended' instead of required
+				'required' 				=> $required, // If false, the plugin is only 'recommended' instead of required
 				'version' 				=> $plugin_version, // E.g. 1.0.0. If set, the active plugin must be this version or higher, otherwise a notice is presented
 				'file_path' 			=> $plugin_slug, // The plugin name
 				'force_activation' 		=> true, // If true, plugin is activated upon theme activation and cannot be deactivated until theme switch
@@ -140,7 +167,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 	 * arrays.
 	 *
 	 * This function is hooked into tgmpa_init, which is fired within the
-	 * TGM_Plugin_Activation class constructor.
+	 * Runway_Plugin_Installer class constructor.
 	 */
 	function required_theme_plugins() {
 		global $themePlugins;
@@ -338,6 +365,19 @@ if ($"."current_extensions == false || ($"."current_extensions != false && isset
 		  } 
 		} 
 		closedir($handle); 
-	} 	
+	} 
+
+  	public function delete_from_list( $plugin_info ) {
+		global $themePlugins, $wp_filesystem;
+
+		if(IS_CHILD) {
+			if(file_exists($plugin_info['source'])) {
+				$wp_filesystem->delete($plugin_info['source']);
+			}
+  			unset($this->plugin_installer_options['plugin_options'][$plugin_info['name']]);
+  			unset($this->plugin_installer_options['plugin_wp_repository'][$plugin_info['slug']]);
+			$this->update_options();		
+		}
+  	}
 }
 ?>

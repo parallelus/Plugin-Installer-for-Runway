@@ -1,26 +1,53 @@
+<?php
+	$navText = array();
+	switch ($this->navigation) {
+		case 'add-plugin':
+			$navText = array(__( 'Add New', 'framework' ));
+			break;
+	}
+	
+	if (!empty($navText)) {
+		$this->navigation_bar( $navText );
+	} else {
+		echo '<p>&nbsp;</p>';
+	}
+?>
+
+<?php if(!in_array($this->navigation, array('add-plugin'))) {?>
 <h2 class="nav-tab-wrapper tab-controlls" style="padding-top: 9px;">
-	<a href="<?php echo $this->self_url(); ?>" class="nav-tab <?php if($this->navigation == '') {echo "nav-tab-active";} ?>"><?php _e('Plugins', 'framework') ?></a>
+	<a href="<?php echo esc_url($this->self_url()); ?>" class="nav-tab <?php if($this->navigation == '') {echo "nav-tab-active";} ?>"><?php _e('Plugins', 'framework') ?></a>
 	<?php if (IS_CHILD && get_template() == 'runway-framework') { ?>
-		<a href="<?php echo $this->self_url('extensions'); ?>" class="nav-tab <?php if($this->navigation == 'extensions') {echo "nav-tab-active";} ?>"><?php _e('Extensions', 'framework') ?></a>
+		<a href="<?php echo esc_url($this->self_url('extensions')); ?>" class="nav-tab <?php if($this->navigation == 'extensions') {echo "nav-tab-active";} ?>"><?php _e('Extensions', 'framework') ?></a>
 	<?php } ?>
 </h2>
+<?php } ?>
 <?php
-	global $plugin_installer, $themePlugins;
-	$tgm = new TGM_Plugin_Activation;
+	global $plugin_installer, $plugin_installer_admin, $themePlugins;
+	$rpi_class = new Runway_Plugin_Installer;
 
     $link = admin_url('admin.php?page=plugin-installer');
-    $redirect = '<script type="text/javascript">window.location = "'.$link.'";</script>';	
+    $redirect = '<script type="text/javascript">window.location = "'. esc_url_raw($link) .'";</script>';	
 
-    $action = isset( $_GET['action'] )? $_GET['action'] : '';				
+    $action = isset( $_GET['action'] )? $_GET['action'] : '';	
 	switch ($action) {				
 		case 'install': {
-			$tgm->do_plugin_install();
-			echo $redirect;
+			$rpi_class->do_plugin_install();
+			echo  $redirect; // escaped above
 		} break;
 
 		case 'activate': {
-			$tgm->do_plugin_activate();
-			echo $redirect;
+			$rpi_class->do_plugin_activate();
+			echo  $redirect; // escaped above
+		} break;
+
+		case 'delete-from-list':{
+			if( isset($_GET['plugin_source']) && isset($_GET['plugin_name']) && isset($_GET['plugin']) ) {
+					$plugin_info = array('name'   => $_GET['plugin_name'],
+										 'slug' => substr($_GET['plugin'], 0, strpos($_GET['plugin'], '/')),
+										 'source' => $_GET['plugin_source']);
+					$plugin_installer_admin->delete_from_list($plugin_info);
+					echo  $redirect; // escaped above
+			}
 		} break;
 
 		case 'install-extension':{
@@ -55,8 +82,8 @@
 						$file_ext = array_pop( $exploded );
 						if ( $file_ext == 'zip' ) {
 							$plugin_installer->load_new_plugin( $_FILES['plugzip'] );
-							$tgm->install_plugins_page();
-							echo $redirect;
+							$rpi_class->install_plugins_page();
+							echo  $redirect; // escaped above
 						}
 						else {
 							$info_message = __('File must have <b>.zip</b> extension Please choose another file.', 'framework');
@@ -77,9 +104,16 @@
 			$vals['exts'] = $extm->get_extensions_list( $extm->extensions_dir );
 			$this->view('extensions', false, $vals);
 		} break;
+	
+		case 'add-plugin-by-url': {
+			if(isset($this->plugin_install_url_message) && $this->plugin_install_url_message != "") {
+				$info_message = $this->plugin_install_url_message;
+			}
+			include_once 'views/add-plugin.php';
+		} break;
 
 		default : { 
-			$tgm->install_plugins_page();
+			$rpi_class->install_plugins_page();
 		} break;
 	}
 
