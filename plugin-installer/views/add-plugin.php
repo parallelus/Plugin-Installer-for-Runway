@@ -1,7 +1,7 @@
 <?php 
 	if(isset($info_message) && $info_message != "") {
 		?>
-<div class="error"><?php echo $info_message; ?></div>
+<div class="error"><?php echo  $info_message; ?></div>
 		<?php
 	}
 ?>

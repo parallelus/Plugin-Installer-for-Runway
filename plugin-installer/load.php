@@ -2,7 +2,7 @@
 /*
     Extension Name: Plugin Installer
     Extension URI: https://github.com/parallelus/Plugin-Installer-for-Runway
-    Version: 0.8.2
+    Version: 0.8.3
     Description: Package and auto-install plugins with themes.
     Author: Parallelus
     Author URI: http://runwaywp.com
@@ -12,7 +12,7 @@
 # Plugin Install and Update Classes
 #-----------------------------------------------------------------
 
-require_once('install/class-tgm-plugin-activation.php'); 
+require_once('install/class-plugin-installer.php'); 
 require_once('update/init.php');
 
 // Settings
@@ -39,7 +39,7 @@ $settings = array(
 // Required components
 include('object.php');
 
-global $plugin_installer, $plugin_installer_admin, $tgm;
+global $plugin_installer, $plugin_installer_admin, $rpi_class;
 $plugin_installer = new Plugin_Installer_Object($settings);
 
 // Load admin components
@@ -80,8 +80,8 @@ function remove_submenu() {
 }
 
 function site_admin_plugin_notice() {
-	$tgm = new TGM_Plugin_Activation;
-	$tgm->notices();
+	$rpi_class = new Runway_Plugin_Installer;
+	$rpi_class->notices();
 }
 
 function plugin_installer_report($reports_object){

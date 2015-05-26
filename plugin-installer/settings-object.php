@@ -167,7 +167,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 	 * arrays.
 	 *
 	 * This function is hooked into tgmpa_init, which is fired within the
-	 * TGM_Plugin_Activation class constructor.
+	 * Runway_Plugin_Installer class constructor.
 	 */
 	function required_theme_plugins() {
 		global $themePlugins;

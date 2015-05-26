@@ -1,34 +1,17 @@
 <?php
+
 /**
- * Plugin installation and activation for WordPress themes.
+ * Runway Extension for Plugin installation and activation. Based on TGM Plugin Activation class.
  *
- * @package   TGM-Plugin-Activation
- * @version   2.3.6
+ * @package   Runway Plugin Activation Class
+ * @version   v1.0.1
  * @author    Thomas Griffin <thomas@thomasgriffinmedia.com>
  * @author    Gary Jones <gamajo@gamajo.com>
- * @copyright Copyright (c) 2012, Thomas Griffin
- * @license   http://opensource.org/licenses/gpl-2.0.php GPL v2 or later
- * @link      https://github.com/thomasgriffin/TGM-Plugin-Activation
+ * @author    Paralleus, Inc. http://para.llel.us
+ * 
  */
 
-/*
-    Copyright 2012  Thomas Griffin  (email : thomas@thomasgriffinmedia.com)
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License, version 3, as
-    published by the Free Software Foundation.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-*/
-
-if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
+if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 	/**
  	 * Automatic plugin installation and activation library.
  	 *
@@ -42,14 +25,14 @@ if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
  	 * @author Thomas Griffin <thomas@thomasgriffinmedia.com>
  	 * @author Gary Jones <gamajo@gamajo.com>
  	 */
-	class TGM_Plugin_Activation {
+	class Runway_Plugin_Installer {
 
 		/**
 	 	 * Holds a copy of itself, so it can be referenced by the class name.
 	 	 *
 	 	 * @since 1.0.0
 	 	 *
-	 	 * @var TGM_Plugin_Activation
+	 	 * @var Runway_Plugin_Installer
 	 	 */
 		static $instance;
 
@@ -155,7 +138,7 @@ if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @see TGM_Plugin_Activation::init()
+		 * @see Runway_Plugin_Installer::init()
 		 */
 		public function __construct() {
 
@@ -196,9 +179,9 @@ if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
 		 *
 		 * @since 2.0.0
 		 *
-		 * @see TGM_Plugin_Activation::admin_menu()
-		 * @see TGM_Plugin_Activation::notices()
-		 * @see TGM_Plugin_Activation::styles()
+		 * @see Runway_Plugin_Installer::admin_menu()
+		 * @see Runway_Plugin_Installer::notices()
+		 * @see Runway_Plugin_Installer::styles()
 		 */
 		public function init() {
 
@@ -322,8 +305,8 @@ if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @see TGM_Plugin_Activation::init()
-		 * @see TGM_Plugin_Activation::install_plugins_page()
+		 * @see Runway_Plugin_Installer::init()
+		 * @see Runway_Plugin_Installer::install_plugins_page()
 		 */
 		public function admin_menu() {
 
@@ -398,7 +381,7 @@ if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
 				<?php if ( isset( $this->message ) ) _e( wp_kses_post( $this->message ), $this->domain ); ?>
 
 				<form id="tgmpa-plugins" action="" method="post">
-            		<input type="hidden" name="tgmpa-page" value="<?php echo $this->menu; ?>" />
+            		<input type="hidden" name="tgmpa-page" value="<?php echo esc_attr($this->menu); ?>" />
             		<?php $plugin_table->display(); ?>
         		</form>
 
@@ -1037,7 +1020,7 @@ if ( ! class_exists( 'TGM_Plugin_Activation' ) ) {
 }
 
 /** Create a new instance of the class */
-new TGM_Plugin_Activation;
+new Runway_Plugin_Installer;
 
 if ( ! function_exists( 'tgmpa' ) ) {
 	/**
@@ -1051,10 +1034,10 @@ if ( ! function_exists( 'tgmpa' ) ) {
 	 */
 	function tgmpa( $plugins, $config = array() ) {
 		foreach ( $plugins as $plugin )
-			TGM_Plugin_Activation::$instance->register( $plugin );
+			Runway_Plugin_Installer::$instance->register( $plugin );
 
 		if ( $config )
-			TGM_Plugin_Activation::$instance->config( $config );
+			Runway_Plugin_Installer::$instance->config( $config );
 	}
 }
 
@@ -1091,7 +1074,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 		 * References parent constructor and sets defaults for class.
 		 *
 		 * The constructor also grabs a copy of $instance from the TGMPA class
-		 * and stores it in the global object TGM_Plugin_Activation::$instance.
+		 * and stores it in the global object Runway_Plugin_Installer::$instance.
 		 *
 		 * @since 2.2.0
 		 *
@@ -1124,15 +1107,15 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 			global $themePlugins;
 
 			/** Load thickbox for plugin links */
-			TGM_Plugin_Activation::$instance->admin_init();
-			TGM_Plugin_Activation::$instance->thickbox();
+			Runway_Plugin_Installer::$instance->admin_init();
+			Runway_Plugin_Installer::$instance->thickbox();
 
 			/** Prep variables for use and grab list of all installed plugins */
 			$table_data = array();
 			$i = 0;
 			$installed_plugins = get_plugins();
 
-//			foreach ( TGM_Plugin_Activation::$instance->plugins as $plugin ) {
+//			foreach ( Runway_Plugin_Installer::$instance->plugins as $plugin ) {
 			if ( is_array($themePlugins) ) {
             	foreach ( $themePlugins as $plugin ) {
            	
@@ -1171,29 +1154,29 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 
 					if ( isset( $plugin['external_url'] ) ) {
 						/** The plugin is linked to an external source */
-						$table_data[$i]['source'] = __( 'External Link', TGM_Plugin_Activation::$instance->domain );
+						$table_data[$i]['source'] = __( 'External Link', Runway_Plugin_Installer::$instance->domain );
 					}
 					elseif ( isset( $plugin['source'] ) ) {
 						/** The plugin must be from a private repository */
 						if ( preg_match( '|^http(s)?://|', $plugin['source'] ) )
-							$table_data[$i]['source'] = __( 'Private Repository', TGM_Plugin_Activation::$instance->domain );
+							$table_data[$i]['source'] = __( 'Private Repository', Runway_Plugin_Installer::$instance->domain );
 						/** The plugin is pre-packaged with the theme */
 						else
-							$table_data[$i]['source'] = __( 'Pre-Packaged', TGM_Plugin_Activation::$instance->domain );
+							$table_data[$i]['source'] = __( 'Pre-Packaged', Runway_Plugin_Installer::$instance->domain );
 					}
 					/** The plugin is from the WordPress repository */
 					else {
-						$table_data[$i]['source'] = __( 'WordPress Repository', TGM_Plugin_Activation::$instance->domain );
+						$table_data[$i]['source'] = __( 'WordPress Repository', Runway_Plugin_Installer::$instance->domain );
 					}
 
-					$table_data[$i]['type'] = $plugin['required'] == 'true' ? __( 'Required', TGM_Plugin_Activation::$instance->domain ) : __( 'Recommended', TGM_Plugin_Activation::$instance->domain );
+					$table_data[$i]['type'] = $plugin['required'] == 'true' ? __( 'Required', Runway_Plugin_Installer::$instance->domain ) : __( 'Recommended', Runway_Plugin_Installer::$instance->domain );
 
 					if ( ! isset( $installed_plugins[$plugin['file_path']] ) )
-						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Not Installed', TGM_Plugin_Activation::$instance->domain ) );
+						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Not Installed', Runway_Plugin_Installer::$instance->domain ) );
 					elseif ( is_plugin_inactive( $plugin['file_path'] ) )
-						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Installed But Not Activated', TGM_Plugin_Activation::$instance->domain ) );
+						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Installed But Not Activated', Runway_Plugin_Installer::$instance->domain ) );
 					else
-						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Installed And Activated', TGM_Plugin_Activation::$instance->domain ) );
+						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Installed And Activated', Runway_Plugin_Installer::$instance->domain ) );
 
 					$table_data[$i]['file_path'] = $plugin['file_path'];
 					$table_data[$i]['url'] = isset( $plugin['source'] ) ? $plugin['source'] : 'repo';
@@ -1230,7 +1213,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 
 		/**
 		 * Retrieve plugin data, given the plugin name. Taken from the
-		 * TGM_Plugin_Activation class.
+		 * Runway_Plugin_Installer class.
 		 *
 		 * Loops through the registered plugins looking for $name. If it finds it,
 		 * it returns the $data from that plugin. Otherwise, returns false.
@@ -1244,7 +1227,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 		protected function _get_plugin_data_from_name( $name, $data = 'slug' ) {
 			global $themePlugins; 
 			foreach ( $themePlugins as $plugin => $values ) { 
-//			foreach ( TGM_Plugin_Activation::$instance->plugins as $plugin => $values ) {
+//			foreach ( Runway_Plugin_Installer::$instance->plugins as $plugin => $values ) {
 				if ( $name == $values['name'] && isset( $values[$data] ) ) 
 					return $values[$data];
 			}
@@ -1300,14 +1283,14 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 							wp_nonce_url(
 								add_query_arg(
 									array(
-										'page'          => TGM_Plugin_Activation::$instance->menu,
+										'page'          => Runway_Plugin_Installer::$instance->menu,
 										'action'		=> 'install', 
 										'plugin'        => $item['slug'],
 										'plugin_name'   => $item['sanitized_plugin'],
 										'plugin_source' => $item['url'],
 										'tgmpa-install' => 'install-plugin', 
 									),
-									admin_url( TGM_Plugin_Activation::$instance->parent_url_general_slug )
+									admin_url( Runway_Plugin_Installer::$instance->parent_url_general_slug )
 								),
 								'tgmpa-install'
 							)
@@ -1327,14 +1310,14 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 						esc_url(
 							add_query_arg(
 								array(
-									'page'                 => TGM_Plugin_Activation::$instance->menu,
+									'page'                 => Runway_Plugin_Installer::$instance->menu,
 									'action'  			   => 'activate', 								
 									'plugin'               => $item['slug'],
 									'plugin_name'          => $item['sanitized_plugin'],
 									'plugin_source'        => $item['url'],
 									'tgmpa-activate'       => 'activate-plugin',
 									'tgmpa-activate-nonce' => wp_create_nonce( 'tgmpa-activate' ), 							),
-								admin_url( TGM_Plugin_Activation::$instance->parent_url_general_slug )
+								admin_url( Runway_Plugin_Installer::$instance->parent_url_general_slug )
 							)
 						),
 						$item['sanitized_plugin']
@@ -1343,29 +1326,27 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 			}
 
 			else {
-				if (IS_CHILD) {	
-					$actions = array(
-						'' => sprintf(
-							' <a href="%1$s" title="'. __('Delete from the list', 'framework') .' %2$s">'. __('Delete from the list', 'framework') .'</a>',
-							esc_url( 
-								add_query_arg(
-									array(
-										'page'                 => TGM_Plugin_Activation::$instance->menu,
-										'action'  			   => 'delete-from-list', 								
-										'plugin'               => $item['slug'],
-										'plugin_name'          => $item['sanitized_plugin'],
-										'plugin_source'        => $item['url'],
-										'tgmpa-activate'       => 'activate-plugin',
-										'tgmpa-activate-nonce' => wp_create_nonce( 'tgmpa-activate' ),
-									),
-									admin_url( TGM_Plugin_Activation::$instance->parent_url_general_slug )
-								)
-							),
-							$item['sanitized_plugin']
+
+				$actions = array(
+					'' => sprintf(
+						' <a href="%1$s" title="'. __('Delete from the list', 'framework') .' %2$s">'. __('Delete from the list', 'framework') .'</a>',
+						esc_url( 
+							add_query_arg(
+								array(
+									'page'                 => Runway_Plugin_Installer::$instance->menu,
+									'action'  			   => 'delete-from-list', 								
+									'plugin'               => $item['slug'],
+									'plugin_name'          => $item['sanitized_plugin'],
+									'plugin_source'        => $item['url'],
+									'tgmpa-activate'       => 'activate-plugin',
+									'tgmpa-activate-nonce' => wp_create_nonce( 'tgmpa-activate' ),
+								),
+								admin_url( Runway_Plugin_Installer::$instance->parent_url_general_slug )
+							)
 						),
-					);
-				} else
-					$actions = array();
+						$item['sanitized_plugin']
+					),
+				);
 			}			
 			return sprintf( '%1$s %2$s', $item['plugin'], $this->row_actions( $actions ) );
 
@@ -1438,7 +1419,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 		 */
 		public function no_items() {
 
-			printf( __( 'No plugins to install or activate. <a href="%1$s" title="'. esc_attr( __('Return to the Dashboard', 'framework') ) .'">'. __('Return to the Dashboard', 'framework') .'</a>', TGM_Plugin_Activation::$instance->domain ), esc_url( admin_url() ) );
+			printf( __( 'No plugins to install or activate. <a href="%1$s" title="'. esc_attr( __('Return to the Dashboard', 'framework') ) .'">'. __('Return to the Dashboard', 'framework') .'</a>', Runway_Plugin_Installer::$instance->domain ), esc_url( admin_url() ) );
 			//echo '<style type="text/css">#adminmenu .wp-submenu li.current { display: none !important; }</style>';
 
 		}
@@ -1454,17 +1435,17 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 
 			$columns = array(
 				'cb'     => '<input type="checkbox" />',
-				'plugin' => __( 'Plugin', TGM_Plugin_Activation::$instance->domain ),
-				'source' => __( 'Source', TGM_Plugin_Activation::$instance->domain ),
-				'type'   => __( 'Type', TGM_Plugin_Activation::$instance->domain ),
-				'status' => __( 'Status', TGM_Plugin_Activation::$instance->domain ),				
+				'plugin' => __( 'Plugin', Runway_Plugin_Installer::$instance->domain ),
+				'source' => __( 'Source', Runway_Plugin_Installer::$instance->domain ),
+				'type'   => __( 'Type', Runway_Plugin_Installer::$instance->domain ),
+				'status' => __( 'Status', Runway_Plugin_Installer::$instance->domain ),				
 			);
 
 			if (IS_CHILD) {
 				$columns = array_merge( 
 					$columns, 
 					array(
-						'action' => __( 'Action', TGM_Plugin_Activation::$instance->domain ),
+						'action' => __( 'Action', Runway_Plugin_Installer::$instance->domain ),
 					)
 				);			
 			}
@@ -1484,12 +1465,12 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 		public function get_bulk_actions() {
 
 			$actions = array(
-				'tgmpa-bulk-install'  => __( 'Install', TGM_Plugin_Activation::$instance->domain ),
-				'tgmpa-bulk-activate' => __( 'Activate', TGM_Plugin_Activation::$instance->domain ),
+				'tgmpa-bulk-install'  => __( 'Install', Runway_Plugin_Installer::$instance->domain ),
+				'tgmpa-bulk-activate' => __( 'Activate', Runway_Plugin_Installer::$instance->domain ),
 			);
 
 			if(IS_CHILD)
-				$actions['tgmpa-bulk-delete'] = __( 'Delete', TGM_Plugin_Activation::$instance->domain );
+				$actions['tgmpa-bulk-delete'] = __( 'Delete', Runway_Plugin_Installer::$instance->domain );
 
 			return $actions;
 
@@ -1608,13 +1589,13 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 				$url = wp_nonce_url(
 					add_query_arg(
 						array(
-							'page' 			=> TGM_Plugin_Activation::$instance->menu,
+							'page' 			=> Runway_Plugin_Installer::$instance->menu,
 							'tgmpa-action' 	=> 'install-selected',
 							'plugins' 		=> urlencode( implode( ',', $plugins ) ),
 							'plugin_paths' 	=> urlencode( implode( ',', $plugin_paths ) ),
 							'plugin_names' 	=> urlencode( implode( ',', $plugin_names ) ),
 						),
-						admin_url( TGM_Plugin_Activation::$instance->parent_url_slug )
+						admin_url( Runway_Plugin_Installer::$instance->parent_url_slug )
 					),
 					'bulk-plugins'
 				);
@@ -1647,7 +1628,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 				}
 
 				if ( is_wp_error( $api ) )
-					wp_die( TGM_Plugin_Activation::$instance->strings['oops'] . var_dump( $api ) );
+					wp_die( Runway_Plugin_Installer::$instance->strings['oops'] . var_dump( $api ) );
 
 				$d = 0;	// Incremental variable
 
@@ -1658,7 +1639,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 				}
 
 				/** Finally, all the data is prepared to be sent to the installer */
-				$url   = add_query_arg( array( 'page' => TGM_Plugin_Activation::$instance->menu ), admin_url( TGM_Plugin_Activation::$instance->parent_url_slug ) );
+				$url   = add_query_arg( array( 'page' => Runway_Plugin_Installer::$instance->menu ), admin_url( Runway_Plugin_Installer::$instance->parent_url_slug ) );
 				$nonce = 'bulk-plugins';
 				$names = $plugin_names;
 
@@ -1696,8 +1677,8 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 				$this->process_bulk_delete();
 
 			    $link = admin_url('admin.php?page=plugin-installer');
-			    $redirect = '<script type="text/javascript">window.location = "'.$link.'";</script>';	
-				echo $redirect;	
+			    $redirect = '<script type="text/javascript">window.location = "'. esc_url_raw($link).'";</script>';	
+				echo  $redirect;	// escaped above
 			}			
 		}
 
@@ -1736,7 +1717,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 			if ( is_wp_error( $activate ) )
 				echo '<div id="message" class="error"><p>' . rf__($activate->get_error_message()) . '</p></div>';
 			else
-				printf( '<div id="message" class="updated"><p>%1$s %2$s</p></div>', _n( 'The following plugin was activated successfully:', 'The following plugins were activated successfully:', $count, TGM_Plugin_Activation::$instance->domain ), $imploded );
+				printf( '<div id="message" class="updated"><p>%1$s %2$s</p></div>', _n( 'The following plugin was activated successfully:', 'The following plugins were activated successfully:', $count, Runway_Plugin_Installer::$instance->domain ), $imploded );
 
 				/** Update recently activated plugins option */
 			$recent = (array) get_option( 'recently_activated' );
@@ -1809,7 +1790,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
  *
  * @since 2.2.0
  */
-if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] ) && TGM_Plugin_Activation::$instance->menu = $_GET[sanitize_key( 'page' )] ) ) {
+if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] ) && Runway_Plugin_Installer::$instance->menu = $_GET[sanitize_key( 'page' )] ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 
 	if ( ! class_exists( 'TGM_Bulk_Installer' ) ) {
@@ -1861,7 +1842,7 @@ if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] )
 
 				/** Set install strings and automatic activation strings (if config option is set to true) */
 				$this->install_strings();
-				if ( TGM_Plugin_Activation::$instance->is_automatic )
+				if ( Runway_Plugin_Installer::$instance->is_automatic )
 					$this->activate_strings();
 
 				/** Run the header string to notify user that the process has begun */
@@ -2004,7 +1985,7 @@ if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] )
 				}
 
 				/** Only process the activation of installed plugins if the automatic flag is set to true */
-				if ( TGM_Plugin_Activation::$instance->is_automatic ) {
+				if ( Runway_Plugin_Installer::$instance->is_automatic ) {
 					/** Flush plugins cache so we can make sure that the installed plugins list is always up to date */
 					wp_cache_flush();
 
@@ -2013,7 +1994,7 @@ if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] )
 					$activate    = activate_plugin( $plugin_info );
 
 					/** Re-populate the file path now that the plugin has been installed and activated */
-					TGM_Plugin_Activation::$instance->populate_file_path();
+					Runway_Plugin_Installer::$instance->populate_file_path();
 
 					/** Set correct strings based on results */
 					if ( is_wp_error( $activate ) ) {
@@ -2045,12 +2026,12 @@ if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] )
 	 		 */
 			public function install_strings() {
 
-				$this->strings['no_package']          = __( 'Install package not available.', TGM_Plugin_Activation::$instance->domain );
-				$this->strings['downloading_package'] = __( 'Downloading install package from <span class="code">%s</span>&#8230;', TGM_Plugin_Activation::$instance->domain );
-				$this->strings['unpack_package']      = __( 'Unpacking the package&#8230;', TGM_Plugin_Activation::$instance->domain );
-				$this->strings['installing_package']  = __( 'Installing the plugin&#8230;', TGM_Plugin_Activation::$instance->domain );
-				$this->strings['process_failed']      = __( 'Plugin install failed.', TGM_Plugin_Activation::$instance->domain );
-				$this->strings['process_success']     = __( 'Plugin installed successfully.', TGM_Plugin_Activation::$instance->domain );
+				$this->strings['no_package']          = __( 'Install package not available.', Runway_Plugin_Installer::$instance->domain );
+				$this->strings['downloading_package'] = __( 'Downloading install package from <span class="code">%s</span>&#8230;', Runway_Plugin_Installer::$instance->domain );
+				$this->strings['unpack_package']      = __( 'Unpacking the package&#8230;', Runway_Plugin_Installer::$instance->domain );
+				$this->strings['installing_package']  = __( 'Installing the plugin&#8230;', Runway_Plugin_Installer::$instance->domain );
+				$this->strings['process_failed']      = __( 'Plugin install failed.', Runway_Plugin_Installer::$instance->domain );
+				$this->strings['process_success']     = __( 'Plugin installed successfully.', Runway_Plugin_Installer::$instance->domain );
 
 			}
 
@@ -2061,8 +2042,8 @@ if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] )
 	 		 */
 			public function activate_strings() {
 
-				$this->strings['activation_failed']  = __( 'Plugin activation failed.', TGM_Plugin_Activation::$instance->domain );
-				$this->strings['activation_success'] = __( 'Plugin activated successfully.', TGM_Plugin_Activation::$instance->domain );
+				$this->strings['activation_failed']  = __( 'Plugin activation failed.', Runway_Plugin_Installer::$instance->domain );
+				$this->strings['activation_success'] = __( 'Plugin activated successfully.', Runway_Plugin_Installer::$instance->domain );
 
 			}
 
@@ -2170,20 +2151,20 @@ if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] )
 			public function add_strings() {
 
 				/** Automatic activation strings */
-				if ( TGM_Plugin_Activation::$instance->is_automatic ) {
-					$this->upgrader->strings['skin_upgrade_start']        = __( 'The installation and activation process is starting. This process may take a while on some hosts, so please be patient.', TGM_Plugin_Activation::$instance->domain );
-					$this->upgrader->strings['skin_update_successful']    = __( '%1$s installed and activated successfully.', TGM_Plugin_Activation::$instance->domain ) . ' <a onclick="%2$s" href="#" class="hide-if-no-js"><span>' . __( 'Show Details', TGM_Plugin_Activation::$instance->domain ) . '</span><span class="hidden">' . __( 'Hide Details', TGM_Plugin_Activation::$instance->domain ) . '</span>.</a>';
-					$this->upgrader->strings['skin_upgrade_end']          = __( 'All installations and activations have been completed.', TGM_Plugin_Activation::$instance->domain );
-					$this->upgrader->strings['skin_before_update_header'] = __( 'Installing and Activating Plugin %1$s (%2$d/%3$d)', TGM_Plugin_Activation::$instance->domain );
+				if ( Runway_Plugin_Installer::$instance->is_automatic ) {
+					$this->upgrader->strings['skin_upgrade_start']        = __( 'The installation and activation process is starting. This process may take a while on some hosts, so please be patient.', Runway_Plugin_Installer::$instance->domain );
+					$this->upgrader->strings['skin_update_successful']    = __( '%1$s installed and activated successfully.', Runway_Plugin_Installer::$instance->domain ) . ' <a onclick="%2$s" href="#" class="hide-if-no-js"><span>' . __( 'Show Details', Runway_Plugin_Installer::$instance->domain ) . '</span><span class="hidden">' . __( 'Hide Details', Runway_Plugin_Installer::$instance->domain ) . '</span>.</a>';
+					$this->upgrader->strings['skin_upgrade_end']          = __( 'All installations and activations have been completed.', Runway_Plugin_Installer::$instance->domain );
+					$this->upgrader->strings['skin_before_update_header'] = __( 'Installing and Activating Plugin %1$s (%2$d/%3$d)', Runway_Plugin_Installer::$instance->domain );
 				}
 				/** Default installation strings */
 				else {
-					$this->upgrader->strings['skin_upgrade_start']        = __( 'The installation process is starting. This process may take a while on some hosts, so please be patient.', TGM_Plugin_Activation::$instance->domain );
-					$this->upgrader->strings['skin_update_failed_error']  = __( 'An error occurred while installing %1$s: <strong>%2$s</strong>.', TGM_Plugin_Activation::$instance->domain );
-					$this->upgrader->strings['skin_update_failed']        = __( 'The installation of %1$s failed.', TGM_Plugin_Activation::$instance->domain );
-					$this->upgrader->strings['skin_update_successful']    = __( '%1$s installed successfully.', TGM_Plugin_Activation::$instance->domain ) . ' <a onclick="%2$s" href="#" class="hide-if-no-js"><span>' . __( 'Show Details', TGM_Plugin_Activation::$instance->domain ) . '</span><span class="hidden">' . __( 'Hide Details', TGM_Plugin_Activation::$instance->domain ) . '</span>.</a>';
-					$this->upgrader->strings['skin_upgrade_end']          = __( 'All installations have been completed.', TGM_Plugin_Activation::$instance->domain );
-					$this->upgrader->strings['skin_before_update_header'] = __( 'Installing Plugin %1$s (%2$d/%3$d)', TGM_Plugin_Activation::$instance->domain );
+					$this->upgrader->strings['skin_upgrade_start']        = __( 'The installation process is starting. This process may take a while on some hosts, so please be patient.', Runway_Plugin_Installer::$instance->domain );
+					$this->upgrader->strings['skin_update_failed_error']  = __( 'An error occurred while installing %1$s: <strong>%2$s</strong>.', Runway_Plugin_Installer::$instance->domain );
+					$this->upgrader->strings['skin_update_failed']        = __( 'The installation of %1$s failed.', Runway_Plugin_Installer::$instance->domain );
+					$this->upgrader->strings['skin_update_successful']    = __( '%1$s installed successfully.', Runway_Plugin_Installer::$instance->domain ) . ' <a onclick="%2$s" href="#" class="hide-if-no-js"><span>' . __( 'Show Details', Runway_Plugin_Installer::$instance->domain ) . '</span><span class="hidden">' . __( 'Hide Details', Runway_Plugin_Installer::$instance->domain ) . '</span>.</a>';
+					$this->upgrader->strings['skin_upgrade_end']          = __( 'All installations have been completed.', Runway_Plugin_Installer::$instance->domain );
+					$this->upgrader->strings['skin_before_update_header'] = __( 'Installing Plugin %1$s (%2$d/%3$d)', Runway_Plugin_Installer::$instance->domain );
 				}
 
 			}
@@ -2257,9 +2238,9 @@ if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] )
 
 				/** Display message based on if all plugins are now active or not */
 				$complete = array();
-				foreach ( TGM_Plugin_Activation::$instance->plugins as $plugin ) {
+				foreach ( Runway_Plugin_Installer::$instance->plugins as $plugin ) {
 					if ( ! is_plugin_active( $plugin['file_path'] ) ) {
-						echo '<p><a href="' . esc_url( add_query_arg( 'page', TGM_Plugin_Activation::$instance->menu, admin_url( TGM_Plugin_Activation::$instance->parent_url_slug ) ) ) . '" title="' . esc_attr( TGM_Plugin_Activation::$instance->strings['return'] ) . '" target="_parent">' . __( TGM_Plugin_Activation::$instance->strings['return'], TGM_Plugin_Activation::$instance->domain ) . '</a></p>';
+						echo '<p><a href="' . esc_url( add_query_arg( 'page', Runway_Plugin_Installer::$instance->menu, admin_url( Runway_Plugin_Installer::$instance->parent_url_slug ) ) ) . '" title="' . esc_attr( Runway_Plugin_Installer::$instance->strings['return'] ) . '" target="_parent">' . __( Runway_Plugin_Installer::$instance->strings['return'], Runway_Plugin_Installer::$instance->domain ) . '</a></p>';
 						$complete[] = $plugin;
 						break;
 					}
@@ -2274,7 +2255,7 @@ if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] )
 
 				/** All plugins are active, so we display the complete string and hide the menu to protect users */
 				if ( empty( $complete ) ) {
-					echo '<p>' .  sprintf( TGM_Plugin_Activation::$instance->strings['complete'], '<a href="' . esc_url( admin_url() ) . '" title="' . esc_attr( __( 'Return to the Dashboard', TGM_Plugin_Activation::$instance->domain ) ) . '">' . __( 'Return to the Dashboard', TGM_Plugin_Activation::$instance->domain ) . '</a>' ) . '</p>';
+					echo '<p>' .  sprintf( Runway_Plugin_Installer::$instance->strings['complete'], '<a href="' . esc_url( admin_url() ) . '" title="' . esc_attr( __( 'Return to the Dashboard', Runway_Plugin_Installer::$instance->domain ) ) . '">' . __( 'Return to the Dashboard', Runway_Plugin_Installer::$instance->domain ) . '</a>' ) . '</p>';
 					//echo '<style type="text/css">#adminmenu .wp-submenu li.current { display: none !important; }</style>';
 				}
 
