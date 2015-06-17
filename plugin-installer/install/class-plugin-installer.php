@@ -3,7 +3,7 @@
 /**
  * Runway Extension for Plugin installation and activation. Based on TGM Plugin Activation class.
  *
- * @package   Runway Plugin Activation Class
+ * @package   Runway Plugin Installer Class
  * @version   v1.0.1
  * @author    Thomas Griffin <thomas@thomasgriffinmedia.com>
  * @author    Gary Jones <gamajo@gamajo.com>
@@ -21,7 +21,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
  	 *
  	 * @since 1.0.0
  	 *
- 	 * @package TGM-Plugin-Activation
+ 	 * @package Runway-Plugin-Installer
  	 * @author Thomas Griffin <thomas@thomasgriffinmedia.com>
  	 * @author Gary Jones <gamajo@gamajo.com>
  	 */
@@ -1064,7 +1064,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 	 *
 	 * @since 2.2.0
 	 *
-	 * @package TGM-Plugin-Activation
+	 * @package Runway-Plugin-Installer
 	 * @author Thomas Griffin <thomas@thomasgriffinmedia.com>
 	 * @author Gary Jones <gamajo@gamajo.com>
 	 */
@@ -1805,7 +1805,7 @@ if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] )
 		 *
 		 * @since 2.2.0
 		 *
-		 * @package TGM-Plugin-Activation
+		 * @package Runway-Plugin-Installer
 		 * @author Thomas Griffin <thomas@thomasgriffinmedia.com>
 		 * @author Gary Jones <gamajo@gamajo.com>
 		 */
@@ -2089,7 +2089,7 @@ if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] )
 		 *
 		 * @since 2.2.0
 		 *
-		 * @package TGM-Plugin-Activation
+		 * @package Runway-Plugin-Installer
 		 * @author Thomas Griffin <thomas@thomasgriffinmedia.com>
 		 * @author Gary Jones <gamajo@gamajo.com>
 		 */
