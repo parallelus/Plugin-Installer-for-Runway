@@ -649,7 +649,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 					}
 					/** Need higher privileges to install the plugin */
 					else {
-						$message['notice_cannot_install'][] = $plugin['name'];
+						//$message['notice_cannot_install'][] = $plugin['name'];
 					}
 				}
 				/** Installed but not active */
@@ -671,7 +671,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 					}
 					/** Need higher privileges to activate the plugin */
 					else {
-						$message['notice_cannot_activate'][] = $plugin['name'];
+						//$message['notice_cannot_activate'][] = $plugin['name'];
 					}
 				}
 			}
