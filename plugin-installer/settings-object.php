@@ -11,7 +11,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 
 		$this->option_key = $settings['option_key'];
 
-		$this->init_options();	
+		$this->init_options();
 	}
 
 	// Add hooks & crooks
@@ -19,19 +19,19 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 		// Init action
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'init', array( $this, 'register_plugins_in_dir' ) );
-		add_action( 'tgmpa_register', array($this, 'required_theme_plugins' ) );		
-		
+		add_action( 'tgmpa_register', array($this, 'required_theme_plugins' ) );
+
 	}
 
-	function init() { 		
-		
-		if ( isset( $_REQUEST['navigation'] ) && !empty( $_REQUEST['navigation'] ) ) { 
+	function init() {
+
+		if ( isset( $_REQUEST['navigation'] ) && !empty( $_REQUEST['navigation'] ) ) {
 			global $plugin_installer_admin;
 			$plugin_installer_admin->navigation = $_REQUEST['navigation'];
-			
+
 			if($plugin_installer_admin->navigation == 'add-plugin-by-url') {
 				$parsed_url = parse_url($_POST['plugin_url']);
-			
+
 				if(!filter_var($_POST['plugin_url'], FILTER_VALIDATE_URL) || !isset($parsed_url['host']) || (isset($parsed_url['host']) && $parsed_url['host'] != 'wordpress.org')) {
 					$plugin_installer_admin->plugin_install_url_message = __('Enter valid url to plugin.', 'framework');
 				}
@@ -39,7 +39,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 					$splitted_path = explode('/', $parsed_url['path']);
 					if($splitted_path[count($splitted_path) - 1] != '')
 						$plugin_slug = $splitted_path[count($splitted_path) - 1];
-					else if(isset($splitted_path[count($splitted_path) - 2])) 
+					else if(isset($splitted_path[count($splitted_path) - 2]))
 						$plugin_slug = $splitted_path[count($splitted_path) - 2];
 					else {
 						$plugin_slug = "";
@@ -65,25 +65,25 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
   	}
 
   	function load_objects(){
-  		
+
   	}
 
-  	function init_options() { 
+  	function init_options() {
   		$this->plugin_installer_options = $this->get_options();
 		if ( isset($this->plugin_installer_options) ) {
 			add_option($this->option_key, array(
 				'plugin_options'=>array(),
 			), '', 'yes');
-			$this->plugin_installer_options = $this->get_options();			
+			$this->plugin_installer_options = $this->get_options();
 		}
   	}
 
   	public function get_options() {
-  		return get_option( $this->option_key );	
+  		return get_option( $this->option_key );
   	}
 
   	public function update_options() {
-  		update_option($this->option_key, $this->plugin_installer_options);  		
+  		update_option($this->option_key, $this->plugin_installer_options);
   	}
 
   	function register_plugins_in_dir(){
@@ -93,7 +93,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 		global $themePlugins, $plugin_installer;
 		$plugins_list = $plugin_installer->get_all_plugins_list();
 
-		foreach ($plugins_list as $plugin_key => $plugin_info) {			
+		foreach ($plugins_list as $plugin_key => $plugin_info) {
 			$plugin_name         = $plugin_info['Name'];
 			$plugin_slug         = $plugin_info['slug'];
 			//$plugin_file         = $plugin_info['main_file'];
@@ -102,21 +102,21 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 			$plugin_install_version = $plugin_info['install_version'];
 
 			if(strstr($plugin_info['source'], 'plugin-installer/plugins/')){
-				$source = get_template_directory() .'/extensions/plugin-installer/plugins/'. $plugin_install_file;				
+				$source = get_template_directory() .'/extensions/plugin-installer/plugins/'. $plugin_install_file;
 			}
 			else{
-				$source = get_template_directory() .'/extensions/plugin-installer/extensions/'. $plugin_install_file;				
+				$source = get_template_directory() .'/extensions/plugin-installer/extensions/'. $plugin_install_file;
 			}
-			$required = 'true';			
+			$required = 'true';
 
-			if ( isset( $this->plugin_installer_options ) && 
-				isset( $this->plugin_installer_options['plugin_options'] ) 
+			if ( isset( $this->plugin_installer_options ) &&
+				isset( $this->plugin_installer_options['plugin_options'] )
 				&& isset( $this->plugin_installer_options['plugin_options'][$plugin_name] )
 				&& !empty( $this->plugin_installer_options['plugin_options'][$plugin_name]['required'] )) {
-				$required = $this->plugin_installer_options['plugin_options'][$plugin_name]['required'];	
-			} else { 
-				$required = 'true'; 
-			}			
+				$required = $this->plugin_installer_options['plugin_options'][$plugin_name]['required'];
+			} else {
+				$required = 'true';
+			}
 
 			// Specify plugin details
 			$themePlugins[$plugin_slug] = array(
@@ -133,7 +133,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 			);
 
 			$this->plugin_installer_options['plugin_options'][$plugin_name]['required'] = $required;
-			// Plugin update 
+			// Plugin update
 			// ---------------------------------------------------------------
 
 			$args = array(
@@ -146,9 +146,9 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 			    'plugin_name' => $plugin_name,
 			    'version'     =>  $plugin_install_version
 			);
-			
-			if (  version_compare( $plugin_version, $plugin_install_version, '>' ) ) 
-				if (file_exists( ABSPATH . 'wp-content/plugins/'. $plugin_slug )) { 
+
+			if (  version_compare( $plugin_version, $plugin_install_version, '>' ) )
+				if (file_exists( ABSPATH . 'wp-content/plugins/'. $plugin_slug )) {
 					${"config_$plugin_slug"}            = new TGM_Updater_Config( $args );
 					${"namespace_updater_$plugin_slug"} = new TGM_Updater( ${"config_$plugin_slug"} ); // Be sure to replace "namespace" with your own custom namespace
 					${"namespace_updater_$plugin_slug"}->update_plugins();            // Be sure to replace "namespace" with your own custom namespace
@@ -206,49 +206,49 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 			'is_automatic'    	=> true,					   	// Automatically activate plugins after installation or not
 			'message' 			=> '',							// Message to output right before the plugins table
 			'strings'      		=> array(
-				'page_title'                       			=> __( 'Install Required Plugins', $theme_text_domain ),
-				'menu_title'                       			=> __( 'Theme Plugins', $theme_text_domain ),
-				'installing'                       			=> __( 'Installing Plugin: %s', $theme_text_domain ), // %1$s = plugin name
-				'oops'                             			=> __( 'Something went wrong with the plugin API.', $theme_text_domain ),
-				'notice_can_install_required'     			=> _n_noop( 'This theme requires the following plugin: %1$s.', 'This theme requires the following plugins: %1$s.' ), // %1$s = plugin name(s)
-				'notice_can_install_recommended'			=> _n_noop( 'This theme recommends the following plugin: %1$s.', 'This theme recommends the following plugins: %1$s.' ), // %1$s = plugin name(s)
-				'notice_cannot_install'  					=> _n_noop( 'Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed.', 'Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed.' ), // %1$s = plugin name(s)
-				'notice_can_activate_required'    			=> _n_noop( 'The following required plugin is currently inactive: %1$s.', 'The following required plugins are currently inactive: %1$s.' ), // %1$s = plugin name(s)
-				'notice_can_activate_recommended'			=> _n_noop( 'The following recommended plugin is currently inactive: %1$s.', 'The following recommended plugins are currently inactive: %1$s.' ), // %1$s = plugin name(s)
-				'notice_cannot_activate' 					=> _n_noop( 'Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated.', 'Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated.' ), // %1$s = plugin name(s)
-				'notice_ask_to_update' 						=> _n_noop( 'The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s.', 'The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s.' ), // %1$s = plugin name(s)
-				'notice_cannot_update' 						=> _n_noop( 'Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated.', 'Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated.' ), // %1$s = plugin name(s)
-				'install_link' 					  			=> _n_noop( 'Begin installing plugin', 'Begin installing plugins' ),
-				'activate_link' 				  			=> _n_noop( 'Activate installed plugin', 'Activate installed plugins' ),
-				'return'                           			=> __( 'Return to Required Plugins Installer', $theme_text_domain ),
-				'plugin_activated'                 			=> __( 'Plugin activated successfully.', $theme_text_domain ),
-				'complete' 									=> __( 'All plugins installed and activated successfully. %s', $theme_text_domain ), // %1$s = dashboard link
+				'page_title'                       			=> __( 'Install Required Plugins', 'framework' ),
+				'menu_title'                       			=> __( 'Theme Plugins', 'framework' ),
+				'installing'                       			=> __( 'Installing Plugin: %s', 'framework' ), // %1$s = plugin name
+				'oops'                             			=> __( 'Something went wrong with the plugin API.', 'framework' ),
+				'notice_can_install_required'     			=> _n_noop( 'This theme requires the following plugin: %1$s.', 'This theme requires the following plugins: %1$s.', 'framework' ), // %1$s = plugin name(s)
+				'notice_can_install_recommended'			=> _n_noop( 'This theme recommends the following plugin: %1$s.', 'This theme recommends the following plugins: %1$s.', 'framework' ), // %1$s = plugin name(s)
+				'notice_cannot_install'  					=> _n_noop( 'Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed.', 'Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed.', 'framework' ), // %1$s = plugin name(s)
+				'notice_can_activate_required'    			=> _n_noop( 'The following required plugin is currently inactive: %1$s.', 'The following required plugins are currently inactive: %1$s.', 'framework' ), // %1$s = plugin name(s)
+				'notice_can_activate_recommended'			=> _n_noop( 'The following recommended plugin is currently inactive: %1$s.', 'The following recommended plugins are currently inactive: %1$s.', 'framework' ), // %1$s = plugin name(s)
+				'notice_cannot_activate' 					=> _n_noop( 'Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated.', 'Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated.', 'framework' ), // %1$s = plugin name(s)
+				'notice_ask_to_update' 						=> _n_noop( 'The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s.', 'The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s.', 'framework' ), // %1$s = plugin name(s)
+				'notice_cannot_update' 						=> _n_noop( 'Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated.', 'Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated.', 'framework' ), // %1$s = plugin name(s)
+				'install_link' 					  			=> _n_noop( 'Begin installing plugin', 'Begin installing plugins', 'framework' ),
+				'activate_link' 				  			=> _n_noop( 'Activate installed plugin', 'Activate installed plugins', 'framework' ),
+				'return'                           			=> __( 'Return to Required Plugins Installer', 'framework' ),
+				'plugin_activated'                 			=> __( 'Plugin activated successfully.', 'framework' ),
+				'complete' 									=> __( 'All plugins installed and activated successfully. %s', 'framework' ), // %1$s = dashboard link
 				'nag_type'									=> 'updated' // Determines admin notice type - can only be 'updated' or 'error'
 			)
 		);
 
-		if(function_exists('tgmpa')){			
+		if(function_exists('tgmpa')){
 			tgmpa( $plugins, $config );
 		}
 	}
 
 	public function make_plugin_from_extension($extension = null){
-		global $extm;		
+		global $extm;
 
 		if($extension != null){
 			$sourcePath = $extm->extensions_dir.$extension;
 			$zipPath = dirname(__FILE__).'/extensions/'.$extension.'.zip';
 
 			if(file_exists($sourcePath)){
-				$pathInfo = pathInfo($sourcePath); 
-				$parentPath = $pathInfo['dirname']; 
-				$dirName = $pathInfo['basename']; 
+				$pathInfo = pathInfo($sourcePath);
+				$parentPath = $pathInfo['dirname'];
+				$dirName = $pathInfo['basename'];
 
 				$ext_info = $extm->get_extension_data($extm->extensions_dir.$extension.'/load.php');
 				$ext = $this->make_plugin_header($ext_info, $extension.'/load.php');
 				$load_extension = "<?php
 	global $"."pagenow;
-	
+
 	if(file_exists(get_theme_root().'/runway-framework/framework/load.php') && $"."pagenow !== 'customize.php' && !isset($"."_REQUEST['wp_customize'])){
 		require_once(get_theme_root().'/runway-framework/framework/load.php');
 
@@ -259,17 +259,17 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 				if(!is_dir(dirname(__FILE__).'/extensions')) {
 					mkdir(dirname(__FILE__).'/extensions');
 				}
-				
+
 				$permissions = substr(sprintf('%o', fileperms(dirname(__FILE__).'/extensions')), -4);
-				if($permissions < '0755') 
+				if($permissions < '0755')
 					chmod(dirname(__FILE__).'/extensions', 0755);
-				
-				$z = new ZipArchive(); 
+
+				$z = new ZipArchive();
 				if($z->open($zipPath, ZIPARCHIVE::CREATE)){
 					$z->addEmptyDir($extension);
 					$z->addFromString($extension.'/'.$extension.'.php', $ext);
 					$z->addFromString($extension.'/load-extension.php', $load_extension);
-					self::ext_to_plugin($sourcePath, $z, strlen("$parentPath/"), $extension.'/'); 
+					self::ext_to_plugin($sourcePath, $z, strlen("$parentPath/"), $extension.'/');
 					$z->close();
 				}
 			}
@@ -278,11 +278,11 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 	}
 
 	private function make_plugin_header($ext_info, $load_php){
-		
+
 		$content = "<?php \r\n/*\r\n";
 		foreach ($ext_info as $key => $value) {
 			if($value != ''){
-				
+
 				// Plugin Name: Hello Dolly
 				// Plugin URI: http://wordpress.org/plugins/hello-dolly/
 				// Description: This is not just a plugin, it symbolizes the hope and enthusiasm of an entire generation summed up in two words sung most famously by Louis Armstrong: Hello, Dolly. When activated you will randomly see a lyric from <cite>Hello, Dolly</cite> in the upper right of your admin screen on every page.
@@ -302,7 +302,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 					case 'Description':{
 						$content .= 'Description: '.$value."\r\n";
 					} break;
-					
+
 					default:{
 						// nothing to do
 					}break;
@@ -310,7 +310,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 			}
 		}
 		$content .= "*/
-			
+
 global $"."shortname;
 
 if ($"."shortname === '' || $"."shortname == null) {
@@ -320,7 +320,7 @@ if ($"."shortname === '' || $"."shortname == null) {
 $"."current_extensions = get_option($"."shortname . 'extensions-manager');
 $"."theme_name = preg_replace('/_$/', '', $"."shortname);
 $"."is_child = (!file_exists(get_stylesheet_directory().'/framework/'))? true : false;
-	
+
 if ($"."current_extensions == false || ($"."current_extensions != false && isset($"."current_extensions['extensions'][$"."theme_name]) && !in_array('".$load_php."', $"."current_extensions['extensions'][$"."theme_name]['active']))) {
 	require_once(dirname(__FILE__) . '/load-extension.php');
 } else {
@@ -338,34 +338,34 @@ if ($"."current_extensions == false || ($"."current_extensions != false && isset
 	}
 }
 ?>";
-		
+
 		return $content;
 	}
 
-	/** 
-	* Add files and sub-directories in a folder to zip file. 
-	* @param string $folder 
-	* @param ZipArchive $zipFile 
-	* @param int $exclusiveLength Number of text to be exclusived from the file path. 
-	*/ 
-	private static function ext_to_plugin($folder, $zipFile, $exclusiveLength, $zipPath = '') { 
-		$handle = opendir($folder); 
-		while (false !== $f = readdir($handle)) { 
-		  if ($f != '.' && $f != '..') { 
-		    $filePath = "$folder/$f"; 
-		    // Remove prefix from file path before add to zip. 
-		    $localPath = substr($filePath, $exclusiveLength); 
-		    if (is_file($filePath)) { 
-		      $zipFile->addFile($filePath, $zipPath.$localPath); 
-		    } elseif (is_dir($filePath)) { 
-		      // Add sub-directory. 
+	/**
+	* Add files and sub-directories in a folder to zip file.
+	* @param string $folder
+	* @param ZipArchive $zipFile
+	* @param int $exclusiveLength Number of text to be exclusived from the file path.
+	*/
+	private static function ext_to_plugin($folder, $zipFile, $exclusiveLength, $zipPath = '') {
+		$handle = opendir($folder);
+		while (false !== $f = readdir($handle)) {
+		  if ($f != '.' && $f != '..') {
+		    $filePath = "$folder/$f";
+		    // Remove prefix from file path before add to zip.
+		    $localPath = substr($filePath, $exclusiveLength);
+		    if (is_file($filePath)) {
+		      $zipFile->addFile($filePath, $zipPath.$localPath);
+		    } elseif (is_dir($filePath)) {
+		      // Add sub-directory.
 		      $zipFile->addEmptyDir($zipPath.'/'.$localPath);
-		      self::ext_to_plugin($filePath, $zipFile, $exclusiveLength, $zipPath); 
-		    } 
-		  } 
-		} 
-		closedir($handle); 
-	} 
+		      self::ext_to_plugin($filePath, $zipFile, $exclusiveLength, $zipPath);
+		    }
+		  }
+		}
+		closedir($handle);
+	}
 
   	public function delete_from_list( $plugin_info ) {
 		global $themePlugins, $wp_filesystem;
@@ -376,7 +376,7 @@ if ($"."current_extensions == false || ($"."current_extensions != false && isset
 			}
   			unset($this->plugin_installer_options['plugin_options'][$plugin_info['name']]);
   			unset($this->plugin_installer_options['plugin_wp_repository'][$plugin_info['slug']]);
-			$this->update_options();		
+			$this->update_options();
 		}
   	}
 }
