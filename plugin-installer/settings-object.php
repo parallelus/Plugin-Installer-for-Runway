@@ -329,7 +329,7 @@ if ($"."current_extensions == false || ($"."current_extensions != false && isset
 		function ".strtolower(preg_replace("/\s/", '_', $ext_info['Name']))."_error_notice() {
 			?>
 			<div class='error'>
-				<p><?php _e('The \"".$ext_info['Name']."\"  plugin cannot work, as the \"".$ext_info['Name']."\" extension already works. Please switch off the extension to have the plugin work'); ?></p>
+				<p><?php _e('The \"".$ext_info['Name']."\"  plugin cannot work, as the \"".$ext_info['Name']."\" extension already works. Please switch off the extension to have the plugin work', 'framework'); ?></p>
 			</div>
 			<?php
 		}

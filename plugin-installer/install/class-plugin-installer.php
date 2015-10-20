@@ -378,7 +378,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 				<?php //screen_icon( apply_filters( 'tgmpa_default_screen_icon', 'themes' ) ); ?>
 				<h2><?php //echo esc_html( get_admin_page_title() ); ?></h2>
 				<?php $plugin_table->prepare_items(); ?>
-				<?php if ( isset( $this->message ) ) _e( wp_kses_post( $this->message ), 'framework' ); ?>
+				<?php if ( isset( $this->message ) ) echo wp_kses_post( $this->message ); ?>
 
 				<form id="tgmpa-plugins" action="" method="post">
             		<input type="hidden" name="tgmpa-page" value="<?php echo esc_attr($this->menu); ?>" />
@@ -1422,7 +1422,9 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 		 */
 		public function no_items() {
 
-			printf( __( 'No plugins to install or activate. <a href="%1$s" title="'. esc_attr( __('Return to the Dashboard', 'framework') ) .'">'. __('Return to the Dashboard', 'framework') .'</a>', 'framework' ), esc_url( admin_url() ) );
+			$start = __( 'No plugins to install or activate.', 'framework');
+			$title = __('Return to the Dashboard', 'framework');
+			echo $start . '<a href="'. esc_url( admin_url() ) .'" title="'. esc_attr( $title ) .'">'. $title .'</a>';
 			//echo '<style type="text/css">#adminmenu .wp-submenu li.current { display: none !important; }</style>';
 
 		}
