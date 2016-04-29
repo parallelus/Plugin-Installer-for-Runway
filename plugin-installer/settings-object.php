@@ -115,7 +115,15 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 				&& !empty( $this->plugin_installer_options['plugin_options'][$plugin_name]['required'] )) {
 				$required = $this->plugin_installer_options['plugin_options'][$plugin_name]['required'];
 			} else {
-				$required = 'true';
+				if(IS_CHILD && !isset($this->plugin_installer_options['plugin_options'][$plugin_name]['required'])) {
+					$theme = wp_get_theme( get_template() );
+					$parent_shortname = sanitize_title( $theme->get( 'Name' ) . '_' );
+					$parent_option_key = $parent_shortname.'plugin_installer';
+					$parent_options = get_option($parent_option_key);
+					$required = isset($parent_options['plugin_options'][$plugin_name]['required'])? $parent_options['plugin_options'][$plugin_name]['required'] : 'true'; 
+				} else {
+					$required = 'true'; 
+				}			
 			}
 
 			// Specify plugin details
