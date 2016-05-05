@@ -20,7 +20,53 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'init', array( $this, 'register_plugins_in_dir' ) );
 		add_action( 'tgmpa_register', array($this, 'required_theme_plugins' ) );
+		add_action( 'admin_notices', array($this, 'activate_pluging_first_time') );
 
+	}
+
+	function activate_pluging_first_time() {
+		global $shortname, $themePlugins;
+
+		$option_key_activated_plugins = $shortname.'plugin_installer_first_activation';
+		$activated_plugins_option = get_option( $option_key_activated_plugins );
+		if( empty($activated_plugins_option) ) {
+			$plugins = get_option( $this->option_key );
+			$plugin_names = array_keys($plugins['plugin_options']);
+
+			$rpi_class = new Runway_Plugin_Installer;
+
+			if(isset($themePlugins) && is_array($themePlugins)) {
+				//echo '<div class="updated first-activated"><p><img class="img-first-activated" src="'.admin_url('images/spinner.gif').'" style="vertical-align: middle;"" />&nbsp;&nbsp;'.__('Please wait while we\'re preparing the theme for your WordPress install...', 'framework').'</p></div>';
+				$is_activated = false;
+				foreach($themePlugins as $key => $val) {
+					$themePlugin_info = array();
+					if( in_array($val['Name'], $plugin_names) && ! file_exists( ABSPATH . 'wp-content/plugins/'. $key )) {
+
+						if( ! $is_activated ) {
+							echo '<div class="updated first-activated"><p><img class="img-first-activated" src="'.admin_url('images/spinner.gif').'" style="vertical-align: middle;"" />&nbsp;&nbsp;'.__('Please wait while we\'re preparing the theme for your WordPress install...', 'framework').'</p></div>';
+							$is_activated = true;
+						}
+					//if( in_array($val['Name'], $plugin_names) && ! is_plugin_active( $key ) ) {
+						$themePlugin_info['name']   = $val['name'];
+						$themePlugin_info['slug']   = $key;
+						$themePlugin_info['source'] = $val['source'];
+						$rpi_class->do_plugin_install( true, $themePlugin_info );
+	    				//$link = admin_url('themes.php');
+	    				//$redirect = '<script type="text/javascript">window.location = "'. esc_url_raw($link) .'";</script>';						
+	    				//echo  $redirect;
+					}
+				}
+				if($is_activated): ?>
+					<script type="text/javascript">
+						jQuery( document ).ready(function($) {
+							$('img.img-first-activated').remove();
+							$('div.first-activated p').text('The theme is installed.');
+						});
+					</script>
+				<?php endif;
+			}
+			update_option( $option_key_activated_plugins, 1 );
+		}
 	}
 
 	function init() {

@@ -410,20 +410,26 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 		 *
 		 * @return boolean True on success, false on failure
 		 */
-		public function do_plugin_install() {
+		public function do_plugin_install( $first_activation = false, $themePlugin_info = array() ) {
 			global $themePlugins;
 
 			/** All plugin information will be stored in an array for processing */
 			$plugin = array();
 
 			/** Checks for actions from hover links to process the installation */
-			if ( isset( $_GET[sanitize_key( 'plugin' )] ) && ( isset( $_GET[sanitize_key( 'tgmpa-install' )] ) && 'install-plugin' == $_GET[sanitize_key( 'tgmpa-install' )] ) ) {
+			if ( $first_activation || ( isset( $_GET[sanitize_key( 'plugin' )] ) && ( isset( $_GET[sanitize_key( 'tgmpa-install' )] ) && 'install-plugin' == $_GET[sanitize_key( 'tgmpa-install' )] ) ) ) {
 
-				check_admin_referer( 'tgmpa-install' );
+				if( $first_activation ) {
+					$plugin['name']   = $themePlugin_info['name']; // Plugin name
+					$plugin['slug']   = $themePlugin_info['slug']; // Plugin slug
+					$plugin['source'] = $themePlugin_info['source']; // Plugin source
+				} else {
+					check_admin_referer( 'tgmpa-install' );
 
-				$plugin['name']   = $_GET[sanitize_key( 'plugin_name' )]; // Plugin name
-				$plugin['slug']   = $_GET[sanitize_key( 'plugin' )]; // Plugin slug
-				$plugin['source'] = $_GET[sanitize_key( 'plugin_source' )]; // Plugin source
+					$plugin['name']   = $_GET[sanitize_key( 'plugin_name' )]; // Plugin name
+					$plugin['slug']   = $_GET[sanitize_key( 'plugin' )]; // Plugin slug
+					$plugin['source'] = $_GET[sanitize_key( 'plugin_source' )]; // Plugin source
+				}
 
 				/** Pass all necessary information via URL if WP_Filesystem is needed */
 				$url = wp_nonce_url(
@@ -483,6 +489,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 				//$source = $plugin['source'];
 
 				/** Create a new instance of Plugin_Upgrader */
+				$title = $first_activation ? '' : $title;
 				$upgrader = new Plugin_Upgrader( $skin = new Plugin_Installer_Skin( compact( 'type', 'title', 'url', 'nonce', 'plugin', 'api' ) ) );
 
 				/** Perform the action and install the plugin from the $source urldecode() */
@@ -532,7 +539,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 					//echo '<style type="text/css">#adminmenu .wp-submenu li.current { display: none !important; }</style>';
 				}
 
-				$this->do_plugin_activate();
+				$this->do_plugin_activate( $first_activation, $themePlugin_info );
 				return true;
 			}
 			/** Checks for actions from hover links to process the activation */
@@ -540,19 +547,27 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 
 				check_admin_referer( 'tgmpa-activate', 'tgmpa-activate-nonce' );
 
-				$this->do_plugin_activate();
+				$this->do_plugin_activate( $first_activation, $themePlugin_info );
 			}
 
 			return false;
 
 		}
 
-		public function do_plugin_activate() {
+		public function do_plugin_activate( $first_activation = false, $themePlugin_info = array() ) {
 			global $themePlugins;
 
-			$plugin['name']   = $_GET[sanitize_key( 'plugin_name' )]; // Plugin name
-			$plugin['slug']   = $_GET[sanitize_key( 'plugin' )]; // Plugin slug
-			$plugin['source'] = $_GET[sanitize_key( 'plugin_source' )]; // Plugin source
+			if( $first_activation ) {
+				$plugin['name']   = $themePlugin_info['name']; // Plugin name
+				$plugin['slug']   = $themePlugin_info['slug']; // Plugin slug
+				$plugin['source'] = $themePlugin_info['source']; // Plugin source
+			} else {
+				check_admin_referer( 'tgmpa-install' );
+
+				$plugin['name']   = $_GET[sanitize_key( 'plugin_name' )]; // Plugin name
+				$plugin['slug']   = $_GET[sanitize_key( 'plugin' )]; // Plugin slug
+				$plugin['source'] = $_GET[sanitize_key( 'plugin_source' )]; // Plugin source
+			}
 
 			$plugin_data = get_plugins( '/' . $plugin['slug'] ); // Retrieve all plugins
 			$plugin_file = array_keys( $plugin_data ); // Retrieve all plugin files from installed plugins
