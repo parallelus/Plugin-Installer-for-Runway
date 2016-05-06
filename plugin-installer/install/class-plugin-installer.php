@@ -493,7 +493,32 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 				$upgrader = new Plugin_Upgrader( $skin = new Plugin_Installer_Skin( compact( 'type', 'title', 'url', 'nonce', 'plugin', 'api' ) ) );
 
 				/** Perform the action and install the plugin from the $source urldecode() */
-				$upgrader->install( $source );
+				if( ! $first_activation )
+					$upgrader->install( $source );
+				else {
+					$upgrader->init();
+					$upgrader->install_strings();
+						$upgrader->strings['unpack_package'] = ' ';
+						$upgrader->strings['installing_package'] = '';
+						$upgrader->strings['process_success'] = '';
+
+					add_filter('upgrader_source_selection', array($upgrader, 'check_package') );
+					add_action( 'upgrader_process_complete', 'wp_clean_plugins_cache', 9, 0 );
+
+					$upgrader->run( array(
+						'package' => $source,
+						'destination' => WP_PLUGIN_DIR,
+						'clear_destination' => false, // Do not overwrite files.
+						'clear_working' => true,
+						'hook_extra' => array(
+							'type' => 'plugin',
+							'action' => 'install',
+						)
+					) );
+
+					remove_action( 'upgrader_process_complete', 'wp_clean_plugins_cache', 9 );
+					remove_filter('upgrader_source_selection', array($upgrader, 'check_package') );
+				}
 
 				/** Flush plugins cache so we can make sure that the installed plugins list is always up to date */
 				wp_cache_flush();
@@ -534,7 +559,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 				$complete = array_filter( $complete );
 
 				/** All plugins are active, so we display the complete string and hide the plugin menu */
-				if ( empty( $complete ) ) {
+				if ( empty( $complete ) && ! $first_activation ) {
 					echo '<p>' .  sprintf( $this->strings['complete'], '<a href="' . esc_url( admin_url() ). '" title="' . esc_attr( __( 'Return to the Dashboard', 'framework' ) ) . '">' . __( 'Return to the Dashboard', 'framework' ) . '</a>' ) . '</p>';
 					//echo '<style type="text/css">#adminmenu .wp-submenu li.current { display: none !important; }</style>';
 				}
@@ -582,7 +607,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 			}
 			else {
 				/** Make sure message doesn't display again if bulk activation is performed immediately after a single activation */
-				if ( ! isset( $_POST[sanitize_key( 'action' )] ) ) {
+				if ( ! isset( $_POST[sanitize_key( 'action' )] ) && ! $first_activation ) {
 					$msg = sprintf( __( 'The following plugin was installed and activated successfully: %s.', 'framework' ), '<strong>' . $plugin['name'] . '</strong>' );
 					echo '<div id="message" class="updated"><p>' . $msg . '</p></div>';
 				}

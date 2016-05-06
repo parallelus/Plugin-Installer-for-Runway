@@ -30,6 +30,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 		$option_key_activated_plugins = $shortname.'plugin_installer_first_activation';
 		$activated_plugins_option = get_option( $option_key_activated_plugins );
 		if( empty($activated_plugins_option) ) {
+			add_filter('install_plugin_complete_actions', '__return_false', 999);
 			$plugins = get_option( $this->option_key );
 			$plugin_names = array_keys($plugins['plugin_options']);
 
@@ -38,6 +39,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 			if(isset($themePlugins) && is_array($themePlugins)) {
 				//echo '<div class="updated first-activated"><p><img class="img-first-activated" src="'.admin_url('images/spinner.gif').'" style="vertical-align: middle;"" />&nbsp;&nbsp;'.__('Please wait while we\'re preparing the theme for your WordPress install...', 'framework').'</p></div>';
 				$is_activated = false;
+				$plugins_list = array();
 				foreach($themePlugins as $key => $val) {
 					$themePlugin_info = array();
 					if( in_array($val['Name'], $plugin_names) && ! file_exists( ABSPATH . 'wp-content/plugins/'. $key )) {
@@ -51,12 +53,14 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 						$themePlugin_info['slug']   = $key;
 						$themePlugin_info['source'] = $val['source'];
 						$rpi_class->do_plugin_install( true, $themePlugin_info );
+						$plugins_list[] = $val['name'];
 	    				//$link = admin_url('themes.php');
 	    				//$redirect = '<script type="text/javascript">window.location = "'. esc_url_raw($link) .'";</script>';						
 	    				//echo  $redirect;
 					}
 				}
-				if($is_activated): ?>
+				if($is_activated): 
+					echo '<div class="updated"><p>'.__('The following plugins were installed and activated successfully: ', 'framework').'<strong>'.implode(', ', $plugins_list).'</strong>.'.'</p></div>'; ?>
 					<script type="text/javascript">
 						jQuery( document ).ready(function($) {
 							$('img.img-first-activated').remove();
