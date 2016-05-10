@@ -86,9 +86,66 @@ class Plugin_Installer_Object extends Runway_Object {
 			}
 		}
 
-		$plugins = array_merge($plugins, $this->get_all_plugins_wp_repository());
+		$plugins = array_merge($plugins, $this->get_all_plugins_wp_repository_auto());
 
 		return $plugins;
+	}
+
+	function get_all_plugins_wp_repository_auto( ) {
+
+		$plugin_slug_installed = array();
+		$plugins = get_plugins();
+
+		foreach($plugins as $slug => $plugin) {
+			$plugin_slug_installed[$slug] = substr($slug, 0, strpos($slug, '/') + 1);
+		}
+
+		$plugin_wp_repository = array();
+		foreach($this->plugin_installer_options['plugin_options'] as $key => $val) {
+				if( !empty($key) && isset($val['slug']) && !empty($val['slug']) ) {
+					$args = array(
+					    'slug' => $val['slug'],
+					    'fields' => array(
+					        'description' => true,
+					        'short_description' => true
+					    )
+					);
+
+					$response = wp_remote_post(
+					    'http://api.wordpress.org/plugins/info/1.0/',
+					    array(
+					        'body' => array(
+					            'action' => 'plugin_information',
+					            'request' => serialize((object)$args)
+					        )
+					    )
+					);
+
+					if ( !is_wp_error($response) ) {
+					    $plugin_wp = unserialize(wp_remote_retrieve_body($response));
+					    if ( !is_object($plugin_wp) ) {
+					        echo '<div class="error"><p>'.__('An error has occurred', 'framework').'</p></div>';
+					    }
+					    else {
+					        if ( $plugin_wp ) {
+								$plugin_index = array_search($val['slug'].'/', $plugin_slug_installed);
+
+								$plugin_wp_repository[$key]['Title'] = $plugin_wp->name;
+								$plugin_wp_repository[$key]['Name'] = $plugin_wp->name;
+								$plugin_wp_repository[$key]['slug'] = !empty($plugin_index)? $plugin_index : $val['slug'];
+								$plugin_wp_repository[$key]['source'] = 'https://wordpress.org/plugins/'.$val['slug'].'/';
+
+					        }
+					    }
+					}
+					else {
+					    echo '<div class="error"><p>'.__('An error has occurred', 'framework').'</p></div>';
+					}
+
+				}
+
+		}
+		return $plugin_wp_repository;
 	}
 
 	function get_all_plugins_wp_repository( ) {

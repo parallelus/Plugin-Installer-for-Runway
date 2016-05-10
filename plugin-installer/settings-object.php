@@ -37,7 +37,6 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 			$rpi_class = new Runway_Plugin_Installer;
 
 			if(isset($themePlugins) && is_array($themePlugins)) {
-				//echo '<div class="updated first-activated"><p><img class="img-first-activated" src="'.admin_url('images/spinner.gif').'" style="vertical-align: middle;"" />&nbsp;&nbsp;'.__('Please wait while we\'re preparing the theme for your WordPress install...', 'framework').'</p></div>';
 				$is_activated = false;
 				$plugins_list = array();
 				foreach($themePlugins as $key => $val) {
@@ -48,10 +47,12 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 							echo '<div class="updated first-activated"><p><img class="img-first-activated" src="'.admin_url('images/spinner.gif').'" style="vertical-align: middle;"" />&nbsp;&nbsp;'.__('Please wait while we\'re preparing the theme for your WordPress install...', 'framework').'</p></div>';
 							$is_activated = true;
 						}
-					//if( in_array($val['Name'], $plugin_names) && ! is_plugin_active( $key ) ) {
+
 						$themePlugin_info['name']   = $val['name'];
 						$themePlugin_info['slug']   = $key;
 						$themePlugin_info['source'] = $val['source'];
+						if(strstr($themePlugin_info['source'], 'https://wordpress.org/plugins/') !== false)
+							continue;
 						$rpi_class->do_plugin_install( true, $themePlugin_info );
 						$plugins_list[] = $val['name'];
 	    				//$link = admin_url('themes.php');
@@ -151,11 +152,15 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 			$plugin_version      = $plugin_info['Version'];
 			$plugin_install_version = $plugin_info['install_version'];
 
-			if(strstr($plugin_info['source'], 'plugin-installer/plugins/')){
-				$source = get_template_directory() .'/extensions/plugin-installer/plugins/'. $plugin_install_file;
-			}
-			else{
-				$source = get_template_directory() .'/extensions/plugin-installer/extensions/'. $plugin_install_file;
+			if(strstr($plugin_info['source'], 'https://wordpress.org/plugins/') !== false) {
+				$source = $plugin_info['source'];
+			} else {
+				if(strstr($plugin_info['source'], 'plugin-installer/plugins/')){
+					$source = get_template_directory() .'/extensions/plugin-installer/plugins/'. $plugin_install_file;
+				}
+				else{
+					$source = get_template_directory() .'/extensions/plugin-installer/extensions/'. $plugin_install_file;
+				}
 			}
 			$required = 'true';
 

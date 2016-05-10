@@ -429,6 +429,11 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 					$plugin['name']   = $_GET[sanitize_key( 'plugin_name' )]; // Plugin name
 					$plugin['slug']   = $_GET[sanitize_key( 'plugin' )]; // Plugin slug
 					$plugin['source'] = $_GET[sanitize_key( 'plugin_source' )]; // Plugin source
+
+					if(strstr($plugin['source'], 'https://wordpress.org/plugins/') !== false) {
+						$url = wp_nonce_url(admin_url('update.php?action=install-plugin&plugin=' . $plugin['slug']), 'install-plugin_' . $plugin['slug']);
+						echo '<script type="text/javascript">window.location = "'. esc_url_raw(str_replace('&amp;', '&', $url)) .'";</script>';	
+					}
 				}
 
 				/** Pass all necessary information via URL if WP_Filesystem is needed */
@@ -587,7 +592,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 				$plugin['slug']   = $themePlugin_info['slug']; // Plugin slug
 				$plugin['source'] = $themePlugin_info['source']; // Plugin source
 			} else {
-				check_admin_referer( 'tgmpa-install' );
+				//check_admin_referer( 'tgmpa-install' );
 
 				$plugin['name']   = $_GET[sanitize_key( 'plugin_name' )]; // Plugin name
 				$plugin['slug']   = $_GET[sanitize_key( 'plugin' )]; // Plugin slug
@@ -1407,8 +1412,9 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 		 */
 		public function column_cb( $item ) {
 
+			$disabled = (strstr($item['url'], 'https://wordpress.org/plugins/') !== false)? 'disabled' : '';
 			$value = $item['file_path'] . ',' . $item['url'] . ',' . $item['sanitized_plugin'];
-			return sprintf( '<input type="checkbox" name="%1$s[]" value="%2$s" id="%3$s" />', $this->_args['singular'], $value, $item['sanitized_plugin'] );
+			return sprintf( '<input type="checkbox" name="%1$s[]" value="%2$s" id="%3$s" %4$s />', $this->_args['singular'], $value, $item['sanitized_plugin'], $disabled );
 
 		}
 
