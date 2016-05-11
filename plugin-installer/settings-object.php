@@ -35,6 +35,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 			$plugin_names = array_keys($plugins['plugin_options']);
 
 			$rpi_class = new Runway_Plugin_Installer;
+			$rpi_class->set_first_activation();
 
 			if(isset($themePlugins) && is_array($themePlugins)) {
 				$is_activated = false;
@@ -51,9 +52,8 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 						$themePlugin_info['name']   = $val['name'];
 						$themePlugin_info['slug']   = $key;
 						$themePlugin_info['source'] = $val['source'];
-						if(strstr($themePlugin_info['source'], 'https://wordpress.org/plugins/') !== false)
-							continue;
-						$rpi_class->do_plugin_install( true, $themePlugin_info );
+
+						$rpi_class->do_plugin_install( $themePlugin_info );
 						$plugins_list[] = $val['name'];
 	    				//$link = admin_url('themes.php');
 	    				//$redirect = '<script type="text/javascript">window.location = "'. esc_url_raw($link) .'";</script>';						

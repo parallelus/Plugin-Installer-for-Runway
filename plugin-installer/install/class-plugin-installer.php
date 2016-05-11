@@ -132,6 +132,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 		 */
 		public $strings = array();
 
+		public $first_activation = false;
 		/**
 		 * Adds a reference of this object to $instance, populates default strings,
 		 * does the tgmpa_init action hook, and hooks in the interactions to init.
@@ -410,16 +411,16 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 		 *
 		 * @return boolean True on success, false on failure
 		 */
-		public function do_plugin_install( $first_activation = false, $themePlugin_info = array() ) {
+		public function do_plugin_install( $themePlugin_info = array() ) {
 			global $themePlugins;
 
 			/** All plugin information will be stored in an array for processing */
 			$plugin = array();
 
 			/** Checks for actions from hover links to process the installation */
-			if ( $first_activation || ( isset( $_GET[sanitize_key( 'plugin' )] ) && ( isset( $_GET[sanitize_key( 'tgmpa-install' )] ) && 'install-plugin' == $_GET[sanitize_key( 'tgmpa-install' )] ) ) ) {
+			if ( $this->first_activation || ( isset( $_GET[sanitize_key( 'plugin' )] ) && ( isset( $_GET[sanitize_key( 'tgmpa-install' )] ) && 'install-plugin' == $_GET[sanitize_key( 'tgmpa-install' )] ) ) ) {
 
-				if( $first_activation ) {
+				if( $this->first_activation ) {
 					$plugin['name']   = $themePlugin_info['name']; // Plugin name
 					$plugin['slug']   = $themePlugin_info['slug']; // Plugin slug
 					$plugin['source'] = $themePlugin_info['source']; // Plugin source
@@ -429,11 +430,6 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 					$plugin['name']   = $_GET[sanitize_key( 'plugin_name' )]; // Plugin name
 					$plugin['slug']   = $_GET[sanitize_key( 'plugin' )]; // Plugin slug
 					$plugin['source'] = $_GET[sanitize_key( 'plugin_source' )]; // Plugin source
-
-					if(strstr($plugin['source'], 'https://wordpress.org/plugins/') !== false) {
-						$url = wp_nonce_url(admin_url('update.php?action=install-plugin&plugin=' . $plugin['slug']), 'install-plugin_' . $plugin['slug']);
-						echo '<script type="text/javascript">window.location = "'. esc_url_raw(str_replace('&amp;', '&', $url)) .'";</script>';	
-					}
 				}
 
 				/** Pass all necessary information via URL if WP_Filesystem is needed */
@@ -466,7 +462,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 				require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php'; // Need for upgrade classes
 
 				/** Set plugin source to WordPress API link if available */
-				if ( isset( $plugin['source'] ) && 'repo' == $plugin['source'] ) {
+				if ( isset( $plugin['source'] ) && strstr($plugin['source'], 'https://wordpress.org/plugins/') !== false/*'repo' == $plugin['source']*/ ) {
 					$api = plugins_api( 'plugin_information', array( 'slug' => $plugin['slug'], 'fields' => array( 'sections' => false ) ) );
 
 					if ( is_wp_error( $api ) )
@@ -494,18 +490,21 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 				//$source = $plugin['source'];
 
 				/** Create a new instance of Plugin_Upgrader */
-				$title = $first_activation ? '' : $title;
-				$upgrader = new Plugin_Upgrader( $skin = new Plugin_Installer_Skin( compact( 'type', 'title', 'url', 'nonce', 'plugin', 'api' ) ) );
+				$title = $this->first_activation ? '' : $title;
+				$first_activation = $this->first_activation;
+				$skin = new Runway_Plugin_Installer_Skin( compact( 'type', 'title', 'url', 'nonce', 'plugin', 'api', 'first_activation' ) );
+				$upgrader = new Plugin_Upgrader( $skin );
 
 				/** Perform the action and install the plugin from the $source urldecode() */
-				if( ! $first_activation )
+				if( ! $this->first_activation )
 					$upgrader->install( $source );
 				else {
 					$upgrader->init();
 					$upgrader->install_strings();
-						$upgrader->strings['unpack_package'] = ' ';
-						$upgrader->strings['installing_package'] = '';
-						$upgrader->strings['process_success'] = '';
+						$skin->upgrader->strings['downloading_package'] = ' ';
+						$skin->upgrader->strings['unpack_package'] = ' ';
+						$skin->upgrader->strings['installing_package'] = '';
+						$skin->upgrader->strings['process_success'] = '';
 
 					add_filter('upgrader_source_selection', array($upgrader, 'check_package') );
 					add_action( 'upgrader_process_complete', 'wp_clean_plugins_cache', 9, 0 );
@@ -549,7 +548,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 				/** Display message based on if all plugins are now active or not */
 				$complete = array();
 				foreach ( $this->plugins as $plugin ) {
-					if ( ! is_plugin_active( $plugin['file_path'] ) ) {
+					if ( ! is_plugin_active( $plugin['file_path'] ) && ! $this->first_activation ) {
 						echo '<p><a href="' . esc_url( add_query_arg( 'page', $this->menu, admin_url( $this->parent_url_slug ) ) ) . '" title="' . esc_attr( $this->strings['return'] ) . '" target="_parent">' . rf__($this->strings['return']) . '</a></p>';
 						$complete[] = $plugin;
 						break;
@@ -564,12 +563,12 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 				$complete = array_filter( $complete );
 
 				/** All plugins are active, so we display the complete string and hide the plugin menu */
-				if ( empty( $complete ) && ! $first_activation ) {
+				if ( empty( $complete ) && ! $this->first_activation ) {
 					echo '<p>' .  sprintf( $this->strings['complete'], '<a href="' . esc_url( admin_url() ). '" title="' . esc_attr( __( 'Return to the Dashboard', 'framework' ) ) . '">' . __( 'Return to the Dashboard', 'framework' ) . '</a>' ) . '</p>';
 					//echo '<style type="text/css">#adminmenu .wp-submenu li.current { display: none !important; }</style>';
 				}
 
-				$this->do_plugin_activate( $first_activation, $themePlugin_info );
+				$this->do_plugin_activate( $themePlugin_info );
 				return true;
 			}
 			/** Checks for actions from hover links to process the activation */
@@ -577,17 +576,17 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 
 				check_admin_referer( 'tgmpa-activate', 'tgmpa-activate-nonce' );
 
-				$this->do_plugin_activate( $first_activation, $themePlugin_info );
+				$this->do_plugin_activate( $themePlugin_info );
 			}
 
 			return false;
 
 		}
 
-		public function do_plugin_activate( $first_activation = false, $themePlugin_info = array() ) {
+		public function do_plugin_activate( $themePlugin_info = array() ) {
 			global $themePlugins;
 
-			if( $first_activation ) {
+			if( $this->first_activation ) {
 				$plugin['name']   = $themePlugin_info['name']; // Plugin name
 				$plugin['slug']   = $themePlugin_info['slug']; // Plugin slug
 				$plugin['source'] = $themePlugin_info['source']; // Plugin source
@@ -612,7 +611,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 			}
 			else {
 				/** Make sure message doesn't display again if bulk activation is performed immediately after a single activation */
-				if ( ! isset( $_POST[sanitize_key( 'action' )] ) && ! $first_activation ) {
+				if ( ! isset( $_POST[sanitize_key( 'action' )] ) && ! $this->first_activation ) {
 					$msg = sprintf( __( 'The following plugin was installed and activated successfully: %s.', 'framework' ), '<strong>' . $plugin['name'] . '</strong>' );
 					echo '<div id="message" class="updated"><p>' . $msg . '</p></div>';
 				}
@@ -1059,6 +1058,11 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 					deactivate_plugins( $plugin['file_path'] );
 			}
 
+		}
+
+		public function set_first_activation() {
+			$this->first_activation = true;
+			$this->strings['return'] = '';
 		}
 
 	}
@@ -2338,6 +2342,18 @@ if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] )
 
 			}
 
+		}
+	}
+}
+
+if ( ! class_exists( 'Runway_Plugin_Installer_Skin' ) ) {
+	require_once ABSPATH . 'wp-admin/includes/plugin-install.php'; // Need for plugins_api
+	require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php'; // Need for upgrade classes
+	class Runway_Plugin_Installer_Skin extends Plugin_Installer_Skin {
+		public function before() {
+			if ( !empty($this->api) ) {
+				$this->upgrader->strings['process_success'] = $this->options['first_activation'] ? '' : sprintf( __('Successfully installed the plugin <strong>%s %s</strong>.'), $this->api->name, $this->api->version);
+			}
 		}
 	}
 }
