@@ -1,4 +1,10 @@
 <?php
+if ( ! defined( 'RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL' ) ) {
+	define( 'RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL', 'https://wordpress.org/plugins/' );
+}
+if ( ! defined( 'RUNWAY_PLUGIN_INSTALLER_WP_API_URL' ) ) {
+	define( 'RUNWAY_PLUGIN_INSTALLER_WP_API_URL', 'http://api.wordpress.org/plugins/info/1.0/' );
+}
 
 class Plugin_Installer_Object extends Runway_Object {
 	public $option_key, $plugin_installer_options, $plugins_path;	
@@ -112,7 +118,7 @@ class Plugin_Installer_Object extends Runway_Object {
 					);
 
 					$response = wp_remote_post(
-					    'http://api.wordpress.org/plugins/info/1.0/',
+					    RUNWAY_PLUGIN_INSTALLER_WP_API_URL,
 					    array(
 					        'body' => array(
 					            'action' => 'plugin_information',
@@ -133,7 +139,7 @@ class Plugin_Installer_Object extends Runway_Object {
 								$plugin_wp_repository[$key]['Title'] = $plugin_wp->name;
 								$plugin_wp_repository[$key]['Name'] = $plugin_wp->name;
 								$plugin_wp_repository[$key]['slug'] = !empty($plugin_index)? $plugin_index : $val['slug'];
-								$plugin_wp_repository[$key]['source'] = 'https://wordpress.org/plugins/'.$val['slug'].'/';
+								$plugin_wp_repository[$key]['source'] = RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL.$val['slug'].'/';
 
 					        }
 					    }

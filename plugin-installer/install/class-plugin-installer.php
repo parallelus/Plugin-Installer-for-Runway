@@ -462,7 +462,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 				require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php'; // Need for upgrade classes
 
 				/** Set plugin source to WordPress API link if available */
-				if ( isset( $plugin['source'] ) && strstr($plugin['source'], 'https://wordpress.org/plugins/') !== false/*'repo' == $plugin['source']*/ ) {
+				if ( isset( $plugin['source'] ) && strstr($plugin['source'], RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL) !== false/*'repo' == $plugin['source']*/ ) {
 					$api = plugins_api( 'plugin_information', array( 'slug' => $plugin['slug'], 'fields' => array( 'sections' => false ) ) );
 
 					if ( is_wp_error( $api ) )
@@ -599,12 +599,13 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 			}
 
 			$plugin_data = get_plugins( '/' . $plugin['slug'] ); // Retrieve all plugins
+			$plugin['slug'] = $this->first_activation ? $plugin['slug'].'/'.key($plugin_data) : $plugin['slug'];
 			$plugin_file = array_keys( $plugin_data ); // Retrieve all plugin files from installed plugins
 			$plugin_to_activate = $plugin['slug'];  // Match plugin slug with appropriate plugin file
 
 			$activate = activate_plugin( $plugin_to_activate ); // Activate the plugin
 
-			if ( is_wp_error( $activate ) ) {
+			if ( is_wp_error( $activate ) && ! $this->first_activation ) {
 				echo '<div id="message" class="error"><p>' . rf__($activate->get_error_message()) . '</p></div>';
 				echo '<p><a href="' . esc_url(  add_query_arg( 'page', $this->menu, admin_url( $this->parent_url_slug ) ) ) . '" title="' . esc_attr( $this->strings['return'] ) . '" target="_parent">' . rf__($this->strings['return']) . '</a></p>';
 				return true; // End it here if there is an error with activation
@@ -1416,7 +1417,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 		 */
 		public function column_cb( $item ) {
 
-			$disabled = (strstr($item['url'], 'https://wordpress.org/plugins/') !== false)? 'disabled' : '';
+			$disabled = (strstr($item['url'], RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL) !== false)? 'disabled' : '';
 			$value = $item['file_path'] . ',' . $item['url'] . ',' . $item['sanitized_plugin'];
 			return sprintf( '<input type="checkbox" name="%1$s[]" value="%2$s" id="%3$s" %4$s />', $this->_args['singular'], $value, $item['sanitized_plugin'], $disabled );
 

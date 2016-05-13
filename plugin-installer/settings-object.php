@@ -148,11 +148,11 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 			$plugin_name         = $plugin_info['Name'];
 			$plugin_slug         = $plugin_info['slug'];
 			//$plugin_file         = $plugin_info['main_file'];
-			$plugin_install_file = $plugin_info['file'];
-			$plugin_version      = $plugin_info['Version'];
-			$plugin_install_version = $plugin_info['install_version'];
+			$plugin_install_file = isset( $plugin_info['file'] ) ? $plugin_info['file'] : '';
+			$plugin_version      = isset( $plugin_info['Version'] ) ? $plugin_info['Version'] : '';
+			$plugin_install_version = isset( $plugin_info['install_version'] ) ? $plugin_info['install_version'] : '';
 
-			if(strstr($plugin_info['source'], 'https://wordpress.org/plugins/') !== false) {
+			if(strstr($plugin_info['source'], RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL) !== false) {
 				$source = $plugin_info['source'];
 			} else {
 				if(strstr($plugin_info['source'], 'plugin-installer/plugins/')){
