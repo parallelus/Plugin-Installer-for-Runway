@@ -92,7 +92,7 @@ class Plugin_Installer_Object extends Runway_Object {
 			}
 		}
 
-		$plugins = array_merge($plugins, $this->get_all_plugins_wp_repository_auto());
+		$plugins = array_merge($plugins, $this->get_all_plugins_wp_repository_auto(), $this->get_all_plugins_wp_repository());
 
 		return $plugins;
 	}
