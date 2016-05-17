@@ -462,7 +462,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 				require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php'; // Need for upgrade classes
 
 				/** Set plugin source to WordPress API link if available */
-				if ( isset( $plugin['source'] ) && strstr($plugin['source'], RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL) !== false/*'repo' == $plugin['source']*/ ) {
+				if ( isset( $plugin['source'] ) && strstr($plugin['source'], RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL) !== false ) {
 					$api = plugins_api( 'plugin_information', array( 'slug' => $plugin['slug'], 'fields' => array( 'sections' => false ) ) );
 
 					if ( is_wp_error( $api ) )
@@ -1417,9 +1417,8 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 		 */
 		public function column_cb( $item ) {
 
-			$disabled = (strstr($item['url'], RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL) !== false)? 'disabled' : '';
 			$value = $item['file_path'] . ',' . $item['url'] . ',' . $item['sanitized_plugin'];
-			return sprintf( '<input type="checkbox" name="%1$s[]" value="%2$s" id="%3$s" %4$s />', $this->_args['singular'], $value, $item['sanitized_plugin'], $disabled );
+			return sprintf( '<input type="checkbox" name="%1$s[]" value="%2$s" id="%3$s" />', $this->_args['singular'], $value, $item['sanitized_plugin'] );
 
 		}
 
@@ -1714,7 +1713,11 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 
 				$this->process_bulk_activate();
 
-				return true;
+				$link = admin_url('options-general.php?page=plugin-installer');
+				$redirect = '<script type="text/javascript">window.location = "'. esc_url_raw($link) .'";</script>';						
+				echo  $redirect;
+
+				//return true;
 			}
 
 			/** Bulk activation process */
@@ -1772,8 +1775,8 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 
 			if ( is_wp_error( $activate ) )
 				echo '<div id="message" class="error"><p>' . rf__($activate->get_error_message()) . '</p></div>';
-			else
-				printf( '<div id="message" class="updated"><p>%1$s %2$s</p></div>', _n( 'The following plugin was activated successfully:', 'The following plugins were activated successfully:', $count, 'framework' ), $imploded );
+			// else
+			// 	printf( '<div id="message" class="updated"><p>%1$s %2$s</p></div>', _n( 'The following plugin was activated successfully:', 'The following plugins were activated successfully:', $count, 'framework' ), $imploded );
 
 				/** Update recently activated plugins option */
 			$recent = (array) get_option( 'recently_activated' );
@@ -1921,6 +1924,16 @@ if ( ! class_exists( 'WP_Upgrader' ) && ( isset( $_GET[sanitize_key( 'page' )] )
 
 				/** Loop through each plugin and process the installation */
 				foreach ( $packages as $plugin ) {
+					if ( isset( $plugin ) && strstr($plugin, RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL) !== false ) {
+						$url_parsed = explode('/', $plugin);
+						$plugin_slug = $url_parsed[4];
+						$api = plugins_api( 'plugin_information', array( 'slug' => $plugin_slug, 'fields' => array( 'sections' => false ) ) );
+						if ( is_wp_error( $api ) )
+							wp_die( $this->strings['oops'] . var_dump( $api ) );
+
+						if ( isset( $api->download_link ) )
+							$plugin = $api->download_link;
+					}
 					$this->update_current++; // Increment counter
 
 					/** Do the plugin install */
