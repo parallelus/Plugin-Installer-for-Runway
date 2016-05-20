@@ -7,7 +7,7 @@ if ( ! defined( 'RUNWAY_PLUGIN_INSTALLER_WP_API_URL' ) ) {
 }
 
 class Plugin_Installer_Object extends Runway_Object {
-	public $option_key, $plugin_installer_options, $plugins_path;	
+	public $option_key, $plugin_installer_options, $plugins_path;
 
 	function __construct($settings) {
 
@@ -23,8 +23,8 @@ class Plugin_Installer_Object extends Runway_Object {
 	}
 
 	/* ----Work with plugin installer---- */
-	
-	public function register_plugin($plugin = array(), $config = array()) {		
+
+	public function register_plugin($plugin = array(), $config = array()) {
 		// TODO: custom plugin registration
 	}
 
@@ -35,7 +35,7 @@ class Plugin_Installer_Object extends Runway_Object {
 		$this->do_install_plugin($plugin);
 	}
 
-	function do_register_all_plugins( ) {				
+	function do_register_all_plugins( ) {
 		foreach (glob($this->plugins_zip_path.'*.zip') as $plug_file) {
             $info = pathinfo($plug_file);
             $plugin = $this->do_register_plugin($info['filename']);
@@ -45,7 +45,7 @@ class Plugin_Installer_Object extends Runway_Object {
             $info = pathinfo($plug_file);
             $plugin = $this->do_register_plugin($info['filename']);
 		}
-	}	
+	}
 
 	function get_all_registered_plugins( ) {
 
@@ -60,7 +60,7 @@ class Plugin_Installer_Object extends Runway_Object {
 
 		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		$plugins = $this->get_all_plugins_list();
-	
+
 		foreach($plugins as $plugin) {
 			if( is_plugin_active( $plugin['slug']) ) {
 				$custom_php = str_replace('.zip', '-custom.php', $plugin['source']);
@@ -130,7 +130,7 @@ class Plugin_Installer_Object extends Runway_Object {
 					if ( !is_wp_error($response) ) {
 					    $plugin_wp = unserialize(wp_remote_retrieve_body($response));
 					    if ( !is_object($plugin_wp) ) {
-					        echo '<div class="error"><p>'.__('An error has occurred', 'framework').'</p></div>';
+					        echo '<div class="error"><p>'.__('An error has occurred', 'runway').'</p></div>';
 					    }
 					    else {
 					        if ( $plugin_wp ) {
@@ -145,7 +145,7 @@ class Plugin_Installer_Object extends Runway_Object {
 					    }
 					}
 					else {
-					    echo '<div class="error"><p>'.__('An error has occurred', 'framework').'</p></div>';
+					    echo '<div class="error"><p>'.__('An error has occurred', 'runway').'</p></div>';
 					}
 
 				}
@@ -157,7 +157,7 @@ class Plugin_Installer_Object extends Runway_Object {
 	function get_all_plugins_wp_repository( ) {
 
 		$plugin_slug_installed = array();
-		$plugins = get_plugins();		
+		$plugins = get_plugins();
 		foreach($plugins as $slug => $plugin) {
 			$plugin_slug_installed[$slug] = substr($slug, 0, strpos($slug, '/') + 1);
 		}
@@ -174,7 +174,7 @@ class Plugin_Installer_Object extends Runway_Object {
 					$plugin_wp_repository[$slug]['slug'] = $file[0];
 					$plugin_wp_repository[$slug]['file'] = '';
 					$plugin_wp_repository[$slug]['install_version'] = $plugin_wp_repository[$slug]['Version'];
-				}	
+				}
 			}
 		}
 
@@ -186,11 +186,11 @@ class Plugin_Installer_Object extends Runway_Object {
 			$res = $this->get_header_info($this->plugins_zip_path, $plug_file);
 		}
 		else {
-			$res = $this->get_header_info($this->extensions_zip_path, $plug_file);			
+			$res = $this->get_header_info($this->extensions_zip_path, $plug_file);
 		}
 
 		return $res;
-		
+
 	}
 
 	function scandir_recursive($dir, $results = array()){
@@ -224,7 +224,7 @@ class Plugin_Installer_Object extends Runway_Object {
 					}
 				}
 			}
- 			$zip->close();	
+ 			$zip->close();
 		}
 
 		return $ret;
@@ -263,7 +263,7 @@ class Plugin_Installer_Object extends Runway_Object {
 
 		$plugin_info = array();
 		$file_data = '';
-		
+
 		if ( class_exists( 'ZipArchive', false ) ) {
 			$res = $this->unzip_file_ziparchive($plugins_zip_path, $plug_file);
 		} else {
@@ -279,12 +279,12 @@ class Plugin_Installer_Object extends Runway_Object {
 
 		if($file_data != ''){
 			$default_headers = array(
-				'Name' => __('Plugin Name', 'framework'),
-				'PluginURI' => __('Plugin URI', 'framework'),
-				'Version' => __('Version', 'framework'),
-				'Description' => __('Description', 'framework'),
-				'Author' => __('Author', 'framework'),
-				'AuthorURI' => __('Author URI', 'framework'),
+				'Name' => __('Plugin Name', 'runway'),
+				'PluginURI' => __('Plugin URI', 'runway'),
+				'Version' => __('Version', 'runway'),
+				'Description' => __('Description', 'runway'),
+				'Author' => __('Author', 'runway'),
+				'AuthorURI' => __('Author URI', 'runway'),
 			);
 
 			$plugin_info = $this->get_data_by_headers($file_data, $default_headers);
@@ -293,13 +293,13 @@ class Plugin_Installer_Object extends Runway_Object {
 			$plugin_info['AuthorName'] = $plugin_info['Author'];
 			$plugin_info['name'] = $plugin_info['Name'];
 			$plugin_info['source'] = $plugins_zip_path.$plug_file;
-			$info = pathinfo($plugin_info['source']); 
+			$info = pathinfo($plugin_info['source']);
 			$plugin_info['slug'] = $main_file;
 			$plugin_info['file'] = $info['basename'];
 
 			if(file_exists($this->plugins_path . '/'. $plugin_info['slug'] ) ) {
-				
-				//$file_data = file_get_contents($this->plugins_path . '/'. $plugin_info['slug'] ); 
+
+				//$file_data = file_get_contents($this->plugins_path . '/'. $plugin_info['slug'] );
 				$file_data = $wp_filesystem->get_contents($this->plugins_path . '/'. $plugin_info['slug']);
 			    $plugin_installed_info = $this->get_data_by_headers($file_data, $default_headers);
 			    $plugin_info['install_version'] = $plugin_installed_info['Version'];
@@ -334,16 +334,16 @@ class Plugin_Installer_Object extends Runway_Object {
 		}
 
 		return $all_headers;
-	}	
+	}
 
 	public function load_new_plugin( $file ) {
 
 		$overrides = array( 'test_form' => false, 'test_type' => false );
 		$plug_file = wp_handle_upload( $file, $overrides );
-		$src = $plug_file['file']; 
+		$src = $plug_file['file'];
 		$dst = $this->plugins_zip_path.$file['name'];
 		copy($src, $dst);
 	}
 
-} 
+}
 ?>

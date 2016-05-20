@@ -83,7 +83,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 		 *
 		 * @var string
 		 */
-		public $domain = 'framework';
+		public $domain = 'runway';
 
 		/**
 		 * Default absolute path to folder containing pre-packaged plugin zip files.
@@ -146,23 +146,23 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 			self::$instance =& $this;
 
 			$this->strings = array(
-				'page_title'                      => __( 'Install Required Plugins', 'framework' ),
-				'menu_title'                      => __( 'Install Plugins', 'framework' ),
-				'installing'                      => __( 'Installing Plugin: %s', 'framework' ),
-				'oops'                            => __( 'Something went wrong.', 'framework' ),
-				'notice_can_install_required'     => _n_noop( 'This theme requires the following plugin: %1$s.', 'This theme requires the following plugins: %1$s.', 'framework' ),
-				'notice_can_install_recommended'  => _n_noop( 'This theme recommends the following plugin: %1$s.', 'This theme recommends the following plugins: %1$s.', 'framework' ),
-				'notice_cannot_install'           => _n_noop( 'Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed.', 'Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed.', 'framework' ),
-				'notice_can_activate_required'    => _n_noop( 'The following required plugin is currently inactive: %1$s.', 'The following required plugins are currently inactive: %1$s.', 'framework' ),
-				'notice_can_activate_recommended' => _n_noop( 'The following recommended plugin is currently inactive: %1$s.', 'The following recommended plugins are currently inactive: %1$s.', 'framework' ),
-				'notice_cannot_activate'          => _n_noop( 'Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated.', 'Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated.', 'framework' ),
-				'notice_ask_to_update'            => _n_noop( 'The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s.', 'The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s.', 'framework' ),
-				'notice_cannot_update'            => _n_noop( 'Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated.', 'Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated.', 'framework' ),
-				'install_link' 					  => _n_noop( 'Install Now', 'Install Now', 'framework' ),
-				'activate_link' 				  => _n_noop( 'Activate installed plugin', 'Activate installed plugins', 'framework' ),
-				'return'                          => __( 'Return to Required Plugins Installer', 'framework' ),
-				'plugin_activated'                => __( 'Plugin activated successfully.', 'framework' ),
-				'complete'                        => __( 'All plugins installed and activated successfully. %1$s', 'framework' ),
+				'page_title'                      => __( 'Install Required Plugins', 'runway' ),
+				'menu_title'                      => __( 'Install Plugins', 'runway' ),
+				'installing'                      => __( 'Installing Plugin: %s', 'runway' ),
+				'oops'                            => __( 'Something went wrong.', 'runway' ),
+				'notice_can_install_required'     => _n_noop( 'This theme requires the following plugin: %1$s.', 'This theme requires the following plugins: %1$s.', 'runway' ),
+				'notice_can_install_recommended'  => _n_noop( 'This theme recommends the following plugin: %1$s.', 'This theme recommends the following plugins: %1$s.', 'runway' ),
+				'notice_cannot_install'           => _n_noop( 'Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed.', 'Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed.', 'runway' ),
+				'notice_can_activate_required'    => _n_noop( 'The following required plugin is currently inactive: %1$s.', 'The following required plugins are currently inactive: %1$s.', 'runway' ),
+				'notice_can_activate_recommended' => _n_noop( 'The following recommended plugin is currently inactive: %1$s.', 'The following recommended plugins are currently inactive: %1$s.', 'runway' ),
+				'notice_cannot_activate'          => _n_noop( 'Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated.', 'Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated.', 'runway' ),
+				'notice_ask_to_update'            => _n_noop( 'The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s.', 'The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s.', 'runway' ),
+				'notice_cannot_update'            => _n_noop( 'Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated.', 'Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated.', 'runway' ),
+				'install_link' 					  => _n_noop( 'Install Now', 'Install Now', 'runway' ),
+				'activate_link' 				  => _n_noop( 'Activate installed plugin', 'Activate installed plugins', 'runway' ),
+				'return'                          => __( 'Return to Required Plugins Installer', 'runway' ),
+				'plugin_activated'                => __( 'Plugin activated successfully.', 'runway' ),
+				'complete'                        => __( 'All plugins installed and activated successfully. %1$s', 'runway' ),
 			);
 
 			/** Annouce that the class is ready, and pass the object (for advanced use) */
@@ -537,7 +537,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 
 					if ( is_wp_error( $activate ) ) {
 						echo '<div id="message" class="error"><p>' . rf__($activate->get_error_message()) . '</p></div>';
-						echo '<p><a href="' . esc_url( add_query_arg( 'page', $this->menu, admin_url( $this->parent_url_slug ) ) ). '" title="' . esc_attr( $this->strings['return'] ) . '" target="_parent">' . __( 'Return to Required Plugins Installer', 'framework' ) . '</a></p>';
+						echo '<p><a href="' . esc_url( add_query_arg( 'page', $this->menu, admin_url( $this->parent_url_slug ) ) ). '" title="' . esc_attr( $this->strings['return'] ) . '" target="_parent">' . __( 'Return to Required Plugins Installer', 'runway' ) . '</a></p>';
 						return true; // End it here if there is an error with automatic activation
 					}
 					else {
@@ -564,7 +564,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 
 				/** All plugins are active, so we display the complete string and hide the plugin menu */
 				if ( empty( $complete ) && ! $this->first_activation ) {
-					echo '<p>' .  sprintf( $this->strings['complete'], '<a href="' . esc_url( admin_url() ). '" title="' . esc_attr( __( 'Return to the Dashboard', 'framework' ) ) . '">' . __( 'Return to the Dashboard', 'framework' ) . '</a>' ) . '</p>';
+					echo '<p>' .  sprintf( $this->strings['complete'], '<a href="' . esc_url( admin_url() ). '" title="' . esc_attr( __( 'Return to the Dashboard', 'runway' ) ) . '">' . __( 'Return to the Dashboard', 'runway' ) . '</a>' ) . '</p>';
 					//echo '<style type="text/css">#adminmenu .wp-submenu li.current { display: none !important; }</style>';
 				}
 
@@ -613,7 +613,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 			else {
 				/** Make sure message doesn't display again if bulk activation is performed immediately after a single activation */
 				if ( ! isset( $_POST[sanitize_key( 'action' )] ) && ! $this->first_activation ) {
-					$msg = sprintf( __( 'The following plugin was installed and activated successfully: %s.', 'framework' ), '<strong>' . $plugin['name'] . '</strong>' );
+					$msg = sprintf( __( 'The following plugin was installed and activated successfully: %s.', 'runway' ), '<strong>' . $plugin['name'] . '</strong>' );
 					echo '<div id="message" class="updated"><p>' . $msg . '</p></div>';
 				}
 			}
@@ -767,8 +767,8 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 
 						/** Setup variables to determine if action links are needed */
 
-						$show_install_link  = $install_link ? '<a href="' . esc_url( add_query_arg( 'page', $this->menu, admin_url( $this->parent_url_general_slug ) ) ) . '">' . translate_nooped_plural( $this->strings['install_link'], $install_link_count, 'framework' ) . '</a>' : '';
-						$show_activate_link = $activate_link ? '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">' . translate_nooped_plural( $this->strings['activate_link'], $activate_link_count, 'framework' ) . '</a>'  : '';
+						$show_install_link  = $install_link ? '<a href="' . esc_url( add_query_arg( 'page', $this->menu, admin_url( $this->parent_url_general_slug ) ) ) . '">' . translate_nooped_plural( $this->strings['install_link'], $install_link_count, 'runway' ) . '</a>' : '';
+						$show_activate_link = $activate_link ? '<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">' . translate_nooped_plural( $this->strings['activate_link'], $activate_link_count, 'runway' ) . '</a>'  : '';
 
 						/** Define all of the action links */
 						$action_links = apply_filters(
@@ -776,7 +776,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 							array(
 								'install'  => ( current_user_can( 'install_plugins' ) ) ? $show_install_link : '',
 								'activate' => ( current_user_can( 'activate_plugins' ) ) ? $show_activate_link : '',
-								'dismiss'  => '<a class="dismiss-notice" href="' . esc_url( add_query_arg( 'tgmpa-dismiss', 'dismiss_admin_notices' ) ) . '" target="_parent">' . __( 'Dismiss this notice', 'framework' ) . '</a>',
+								'dismiss'  => '<a class="dismiss-notice" href="' . esc_url( add_query_arg( 'tgmpa-dismiss', 'dismiss_admin_notices' ) ) . '" target="_parent">' . __( 'Dismiss this notice', 'runway' ) . '</a>',
 							)
 						);
 						$action_links = array_filter( $action_links ); // Remove any empty array items
@@ -788,7 +788,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 						else
 							$imploded    =  empty($plugin_groups)? '<em>' . $last_plugin . '</em>' : '<em>' .  implode( ', ', $plugin_groups ) . '</em> and <em>' . $last_plugin . '</em>';
 
-						$rendered .= '<p>' . sprintf( translate_nooped_plural( $this->strings[$type], $count, 'framework' ), $imploded, $count ) . '</p>'; // All messages now stored
+						$rendered .= '<p>' . sprintf( translate_nooped_plural( $this->strings[$type], $count, 'runway' ), $imploded, $count ) . '</p>'; // All messages now stored
 					}
 
 
@@ -1204,29 +1204,29 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 
 					if ( isset( $plugin['external_url'] ) ) {
 						/** The plugin is linked to an external source */
-						$table_data[$i]['source'] = __( 'External Link', 'framework' );
+						$table_data[$i]['source'] = __( 'External Link', 'runway' );
 					}
 					elseif ( isset( $plugin['source'] ) ) {
 						/** The plugin must be from a private repository */
 						if ( preg_match( '|^http(s)?://|', $plugin['source'] ) )
-							$table_data[$i]['source'] = __( 'Private Repository', 'framework' );
+							$table_data[$i]['source'] = __( 'Private Repository', 'runway' );
 						/** The plugin is pre-packaged with the theme */
 						else
-							$table_data[$i]['source'] = __( 'Pre-Packaged', 'framework' );
+							$table_data[$i]['source'] = __( 'Pre-Packaged', 'runway' );
 					}
 					/** The plugin is from the WordPress repository */
 					else {
-						$table_data[$i]['source'] = __( 'WordPress Repository', 'framework' );
+						$table_data[$i]['source'] = __( 'WordPress Repository', 'runway' );
 					}
 
-					$table_data[$i]['type'] = $plugin['required'] == 'true' ? __( 'Required', 'framework' ) : __( 'Recommended', 'framework' );
+					$table_data[$i]['type'] = $plugin['required'] == 'true' ? __( 'Required', 'runway' ) : __( 'Recommended', 'runway' );
 
 					if ( ! isset( $installed_plugins[$plugin['file_path']] ) )
-						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Not Installed', 'framework' ) );
+						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Not Installed', 'runway' ) );
 					elseif ( is_plugin_inactive( $plugin['file_path'] ) )
-						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Installed But Not Activated', 'framework' ) );
+						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Installed But Not Activated', 'runway' ) );
 					else
-						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Installed And Activated', 'framework' ) );
+						$table_data[$i]['status'] = sprintf( '%1$s', __( 'Installed And Activated', 'runway' ) );
 
 					$table_data[$i]['file_path'] = $plugin['file_path'];
 					$table_data[$i]['url'] = isset( $plugin['source'] ) ? $plugin['source'] : 'repo';
@@ -1328,7 +1328,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 
 				$actions = array(
 					'install' => sprintf(
-						'<a href="%1$s" title="'. __('Install', 'framework') .' %2$s">'. __('Install', 'framework') .'</a>',
+						'<a href="%1$s" title="'. __('Install', 'runway') .' %2$s">'. __('Install', 'runway') .'</a>',
 						esc_url(
 							wp_nonce_url(
 								add_query_arg(
@@ -1356,7 +1356,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 
 				$actions = array(
 					'activate' => sprintf(
-						'<a href="%1$s" title="'. __('Activate', 'framework') .' %2$s">'. __('Activate', 'framework') .'</a>',
+						'<a href="%1$s" title="'. __('Activate', 'runway') .' %2$s">'. __('Activate', 'runway') .'</a>',
 						esc_url(
 							add_query_arg(
 								array(
@@ -1379,7 +1379,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 				if (IS_CHILD) {
 					$actions = array(
 						'' => sprintf(
-							' <a href="%1$s" title="'. __('Delete from the list', 'framework') .' %2$s">'. __('Delete from the list', 'framework') .'</a>',
+							' <a href="%1$s" title="'. __('Delete from the list', 'runway') .' %2$s">'. __('Delete from the list', 'runway') .'</a>',
 							esc_url(
 								add_query_arg(
 									array(
@@ -1456,7 +1456,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 		public function column_action($item) {
 
 			$button = '<input type="hidden" name="action_save[' . $item['sanitized_plugin'] . ']" />' .
-				'<button type="submit" class="button-primary ajax-save">'.__('Save', 'framework').'</button>';
+				'<button type="submit" class="button-primary ajax-save">'.__('Save', 'runway').'</button>';
 			return $button;
 
 		}
@@ -1472,8 +1472,8 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 		 */
 		public function no_items() {
 
-			$start = __( 'No plugins to install or activate.', 'framework');
-			$title = __('Return to the Dashboard', 'framework');
+			$start = __( 'No plugins to install or activate.', 'runway');
+			$title = __('Return to the Dashboard', 'runway');
 			echo $start . '<a href="'. esc_url( admin_url() ) .'" title="'. esc_attr( $title ) .'">'. $title .'</a>';
 			//echo '<style type="text/css">#adminmenu .wp-submenu li.current { display: none !important; }</style>';
 
@@ -1490,17 +1490,17 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 
 			$columns = array(
 				'cb'     => '<input type="checkbox" />',
-				'plugin' => __( 'Plugin', 'framework' ),
-				'source' => __( 'Source', 'framework' ),
-				'type'   => __( 'Type', 'framework' ),
-				'status' => __( 'Status', 'framework' ),
+				'plugin' => __( 'Plugin', 'runway' ),
+				'source' => __( 'Source', 'runway' ),
+				'type'   => __( 'Type', 'runway' ),
+				'status' => __( 'Status', 'runway' ),
 			);
 
 			if (IS_CHILD) {
 				$columns = array_merge(
 					$columns,
 					array(
-						'action' => __( 'Action', 'framework' ),
+						'action' => __( 'Action', 'runway' ),
 					)
 				);
 			}
@@ -1520,12 +1520,12 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 		public function get_bulk_actions() {
 
 			$actions = array(
-				'tgmpa-bulk-install'  => __( 'Install', 'framework' ),
-				'tgmpa-bulk-activate' => __( 'Activate', 'framework' ),
+				'tgmpa-bulk-install'  => __( 'Install', 'runway' ),
+				'tgmpa-bulk-activate' => __( 'Activate', 'runway' ),
 			);
 
 			if(IS_CHILD)
-				$actions['tgmpa-bulk-delete'] = __( 'Delete', 'framework' );
+				$actions['tgmpa-bulk-delete'] = __( 'Delete', 'runway' );
 
 			return $actions;
 
@@ -1715,7 +1715,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 				$this->process_bulk_activate();
 
 				$link = admin_url('options-general.php?page=plugin-installer');
-				$redirect = '<script type="text/javascript">window.location = "'. esc_url_raw($link) .'";</script>';						
+				$redirect = '<script type="text/javascript">window.location = "'. esc_url_raw($link) .'";</script>';
 				echo  $redirect;
 
 				//return true;
@@ -1728,7 +1728,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 				$this->process_bulk_activate();
 
 				$link = admin_url('options-general.php?page=plugin-installer');
-				$redirect = '<script type="text/javascript">window.location = "'. esc_url_raw($link) .'";</script>';						
+				$redirect = '<script type="text/javascript">window.location = "'. esc_url_raw($link) .'";</script>';
 				echo  $redirect;
 //				return true;
 			}
@@ -1780,7 +1780,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 			if ( is_wp_error( $activate ) )
 				echo '<div id="message" class="error"><p>' . rf__($activate->get_error_message()) . '</p></div>';
 			// else
-			// 	printf( '<div id="message" class="updated"><p>%1$s %2$s</p></div>', _n( 'The following plugin was activated successfully:', 'The following plugins were activated successfully:', $count, 'framework' ), $imploded );
+			// 	printf( '<div id="message" class="updated"><p>%1$s %2$s</p></div>', _n( 'The following plugin was activated successfully:', 'The following plugins were activated successfully:', $count, 'runway' ), $imploded );
 
 				/** Update recently activated plugins option */
 			$recent = (array) get_option( 'recently_activated' );

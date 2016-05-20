@@ -3,8 +3,8 @@
 	<thead>
 		<tr>
 			<th scope="col" id="cb" class="manage-column column-cb check-column" style="width: 0px;"><input type="checkbox" name="ext_chk[]" /></th>
-			<th id="name" class="manage-column column-name"><?php echo __('Extension', 'framework'); ?></th>
-			<th id="description" class="manage-column column-description"><?php echo __('Description', 'framework'); ?></th>
+			<th id="name" class="manage-column column-name"><?php echo __('Extension', 'runway'); ?></th>
+			<th id="description" class="manage-column column-description"><?php echo __('Description', 'runway'); ?></th>
 		</tr>
 	</thead>
 	<tbody id="the-list">
@@ -26,18 +26,18 @@ if ( !empty( $exts ) ):
 					// Item description
 					$description = '<div class="plugin-description"><p>'. rf__($ext_info['Description']) .'</p></div>';
 					// Item info
-					$class = ( $ext_cnt ) ? 'inactive' : 'active' ;					
-					$version = ( $ext_info['Version'] ) ? __('Version', 'framework').': '.$ext_info['Version'] : '';
+					$class = ( $ext_cnt ) ? 'inactive' : 'active' ;
+					$version = ( $ext_info['Version'] ) ? __('Version', 'runway').': '.$ext_info['Version'] : '';
 					if ( $ext_info['Author'] ) {
 						$author = ' | By '. $ext_info['Author'];
 						if ( $ext_info['AuthorURI'] ) {
-							$author = ' | By <a href="'. esc_url($ext_info['AuthorURI']) .'" title="'.__('Visit author homepage', 'framework').'">'. $ext_info['Author'] .'</a>';
+							$author = ' | By <a href="'. esc_url($ext_info['AuthorURI']) .'" title="'.__('Visit author homepage', 'runway').'">'. $ext_info['Author'] .'</a>';
 						}
 					}
 					else {
-						$author = ' | By Unknown';	
+						$author = ' | By Unknown';
 					}
-					$plugin_link = ( $ext_info['ExtensionURI'] ) ? ' | <a href="'. esc_url($ext_info['ExtensionURI']) .'" title="'. esc_attr( __('Visit plugin site', 'framework') ).'">'.__('Visit plugin site', 'framework').'</a>' : '';
+					$plugin_link = ( $ext_info['ExtensionURI'] ) ? ' | <a href="'. esc_url($ext_info['ExtensionURI']) .'" title="'. esc_attr( __('Visit plugin site', 'runway') ).'">'.__('Visit plugin site', 'runway').'</a>' : '';
 					$info = '<div class="'. esc_attr($class) .' second plugin-version-author-uri">'. $version . $author . $plugin_link .'</div>';
 
 					// Print details
@@ -49,7 +49,7 @@ if ( !empty( $exts ) ):
 	<?php endif; endforeach; else: ?>
 		<tr calss="active">
 			<td class="plugin-title">
-				<?php echo __('Extensions not found', 'framework'); ?>.
+				<?php echo __('Extensions not found', 'runway'); ?>.
 			</td>
 			<td class="column-description desc"> </td>
 		</tr>
@@ -57,5 +57,5 @@ if ( !empty( $exts ) ):
 	</tbody>
 </table><br>
 
-<input class="button-primary" type="submit" value="<?php echo __('Allow Install as Plugin', 'framework'); ?>">
+<input class="button-primary" type="submit" value="<?php echo __('Allow Install as Plugin', 'runway'); ?>">
 </form>

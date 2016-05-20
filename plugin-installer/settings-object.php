@@ -45,7 +45,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 					if( in_array($val['Name'], $plugin_names) && ! file_exists( ABSPATH . 'wp-content/plugins/'. $key )) {
 
 						if( ! $is_activated ) {
-							echo '<div class="updated first-activated"><p><img class="img-first-activated" src="'.admin_url('images/spinner.gif').'" style="vertical-align: middle;"" />&nbsp;&nbsp;'.__('Please wait while we\'re preparing the theme for your WordPress install...', 'framework').'</p></div>';
+							echo '<div class="updated first-activated"><p><img class="img-first-activated" src="'.admin_url('images/spinner.gif').'" style="vertical-align: middle;"" />&nbsp;&nbsp;'.__('Please wait while we\'re preparing the theme for your WordPress install...', 'runway').'</p></div>';
 							$is_activated = true;
 						}
 
@@ -56,12 +56,12 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 						$rpi_class->do_plugin_install( $themePlugin_info );
 						$plugins_list[] = $val['name'];
 	    				//$link = admin_url('themes.php');
-	    				//$redirect = '<script type="text/javascript">window.location = "'. esc_url_raw($link) .'";</script>';						
+	    				//$redirect = '<script type="text/javascript">window.location = "'. esc_url_raw($link) .'";</script>';
 	    				//echo  $redirect;
 					}
 				}
-				if($is_activated): 
-					echo '<div class="updated"><p>'.__('The following plugins were installed and activated successfully: ', 'framework').'<strong>'.implode(', ', $plugins_list).'</strong>.'.'</p></div>'; ?>
+				if($is_activated):
+					echo '<div class="updated"><p>'.__('The following plugins were installed and activated successfully: ', 'runway').'<strong>'.implode(', ', $plugins_list).'</strong>.'.'</p></div>'; ?>
 					<script type="text/javascript">
 						jQuery( document ).ready(function($) {
 							$('img.img-first-activated').remove();
@@ -84,7 +84,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 				$parsed_url = parse_url($_POST['plugin_url']);
 
 				if(!filter_var($_POST['plugin_url'], FILTER_VALIDATE_URL) || !isset($parsed_url['host']) || (isset($parsed_url['host']) && $parsed_url['host'] != 'wordpress.org')) {
-					$plugin_installer_admin->plugin_install_url_message = __('Enter valid url to plugin.', 'framework');
+					$plugin_installer_admin->plugin_install_url_message = __('Enter valid url to plugin.', 'runway');
 				}
 				else {
 					$splitted_path = explode('/', $parsed_url['path']);
@@ -94,7 +94,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 						$plugin_slug = $splitted_path[count($splitted_path) - 2];
 					else {
 						$plugin_slug = "";
-						$plugin_installer_admin->plugin_install_url_message = __('Enter valid url to plugin.', 'framework');
+						$plugin_installer_admin->plugin_install_url_message = __('Enter valid url to plugin.', 'runway');
 					}
 
 					if($plugin_slug != "") {
@@ -175,10 +175,10 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 					$parent_shortname = sanitize_title( $theme->get( 'Name' ) . '_' );
 					$parent_option_key = $parent_shortname.'plugin_installer';
 					$parent_options = get_option($parent_option_key);
-					$required = isset($parent_options['plugin_options'][$plugin_name]['required'])? $parent_options['plugin_options'][$plugin_name]['required'] : 'true'; 
+					$required = isset($parent_options['plugin_options'][$plugin_name]['required'])? $parent_options['plugin_options'][$plugin_name]['required'] : 'true';
 				} else {
-					$required = 'true'; 
-				}			
+					$required = 'true';
+				}
 			}
 
 			// Specify plugin details
@@ -250,7 +250,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 		}
 
 		// Change this to your theme text domain, used for internationalising strings
-		$theme_text_domain = 'framework';
+		$theme_text_domain = 'runway';
 
 		/**
 		 * Array of configuration settings. Amend each line as needed.
@@ -269,23 +269,23 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 			'is_automatic'    	=> true,					   	// Automatically activate plugins after installation or not
 			'message' 			=> '',							// Message to output right before the plugins table
 			'strings'      		=> array(
-				'page_title'                       			=> __( 'Install Required Plugins', 'framework' ),
-				'menu_title'                       			=> __( 'Theme Plugins', 'framework' ),
-				'installing'                       			=> __( 'Installing Plugin: %s', 'framework' ), // %1$s = plugin name
-				'oops'                             			=> __( 'Something went wrong with the plugin API.', 'framework' ),
-				'notice_can_install_required'     			=> _n_noop( 'This theme requires the following plugin: %1$s.', 'This theme requires the following plugins: %1$s.', 'framework' ), // %1$s = plugin name(s)
-				'notice_can_install_recommended'			=> _n_noop( 'This theme recommends the following plugin: %1$s.', 'This theme recommends the following plugins: %1$s.', 'framework' ), // %1$s = plugin name(s)
-				'notice_cannot_install'  					=> _n_noop( 'Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed.', 'Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed.', 'framework' ), // %1$s = plugin name(s)
-				'notice_can_activate_required'    			=> _n_noop( 'The following required plugin is currently inactive: %1$s.', 'The following required plugins are currently inactive: %1$s.', 'framework' ), // %1$s = plugin name(s)
-				'notice_can_activate_recommended'			=> _n_noop( 'The following recommended plugin is currently inactive: %1$s.', 'The following recommended plugins are currently inactive: %1$s.', 'framework' ), // %1$s = plugin name(s)
-				'notice_cannot_activate' 					=> _n_noop( 'Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated.', 'Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated.', 'framework' ), // %1$s = plugin name(s)
-				'notice_ask_to_update' 						=> _n_noop( 'The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s.', 'The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s.', 'framework' ), // %1$s = plugin name(s)
-				'notice_cannot_update' 						=> _n_noop( 'Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated.', 'Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated.', 'framework' ), // %1$s = plugin name(s)
-				'install_link' 					  			=> _n_noop( 'Begin installing plugin', 'Begin installing plugins', 'framework' ),
-				'activate_link' 				  			=> _n_noop( 'Activate installed plugin', 'Activate installed plugins', 'framework' ),
-				'return'                           			=> __( 'Return to Required Plugins Installer', 'framework' ),
-				'plugin_activated'                 			=> __( 'Plugin activated successfully.', 'framework' ),
-				'complete' 									=> __( 'All plugins installed and activated successfully. %s', 'framework' ), // %1$s = dashboard link
+				'page_title'                       			=> __( 'Install Required Plugins', 'runway' ),
+				'menu_title'                       			=> __( 'Theme Plugins', 'runway' ),
+				'installing'                       			=> __( 'Installing Plugin: %s', 'runway' ), // %1$s = plugin name
+				'oops'                             			=> __( 'Something went wrong with the plugin API.', 'runway' ),
+				'notice_can_install_required'     			=> _n_noop( 'This theme requires the following plugin: %1$s.', 'This theme requires the following plugins: %1$s.', 'runway' ), // %1$s = plugin name(s)
+				'notice_can_install_recommended'			=> _n_noop( 'This theme recommends the following plugin: %1$s.', 'This theme recommends the following plugins: %1$s.', 'runway' ), // %1$s = plugin name(s)
+				'notice_cannot_install'  					=> _n_noop( 'Sorry, but you do not have the correct permissions to install the %s plugin. Contact the administrator of this site for help on getting the plugin installed.', 'Sorry, but you do not have the correct permissions to install the %s plugins. Contact the administrator of this site for help on getting the plugins installed.', 'runway' ), // %1$s = plugin name(s)
+				'notice_can_activate_required'    			=> _n_noop( 'The following required plugin is currently inactive: %1$s.', 'The following required plugins are currently inactive: %1$s.', 'runway' ), // %1$s = plugin name(s)
+				'notice_can_activate_recommended'			=> _n_noop( 'The following recommended plugin is currently inactive: %1$s.', 'The following recommended plugins are currently inactive: %1$s.', 'runway' ), // %1$s = plugin name(s)
+				'notice_cannot_activate' 					=> _n_noop( 'Sorry, but you do not have the correct permissions to activate the %s plugin. Contact the administrator of this site for help on getting the plugin activated.', 'Sorry, but you do not have the correct permissions to activate the %s plugins. Contact the administrator of this site for help on getting the plugins activated.', 'runway' ), // %1$s = plugin name(s)
+				'notice_ask_to_update' 						=> _n_noop( 'The following plugin needs to be updated to its latest version to ensure maximum compatibility with this theme: %1$s.', 'The following plugins need to be updated to their latest version to ensure maximum compatibility with this theme: %1$s.', 'runway' ), // %1$s = plugin name(s)
+				'notice_cannot_update' 						=> _n_noop( 'Sorry, but you do not have the correct permissions to update the %s plugin. Contact the administrator of this site for help on getting the plugin updated.', 'Sorry, but you do not have the correct permissions to update the %s plugins. Contact the administrator of this site for help on getting the plugins updated.', 'runway' ), // %1$s = plugin name(s)
+				'install_link' 					  			=> _n_noop( 'Begin installing plugin', 'Begin installing plugins', 'runway' ),
+				'activate_link' 				  			=> _n_noop( 'Activate installed plugin', 'Activate installed plugins', 'runway' ),
+				'return'                           			=> __( 'Return to Required Plugins Installer', 'runway' ),
+				'plugin_activated'                 			=> __( 'Plugin activated successfully.', 'runway' ),
+				'complete' 									=> __( 'All plugins installed and activated successfully. %s', 'runway' ), // %1$s = dashboard link
 				'nag_type'									=> 'updated' // Determines admin notice type - can only be 'updated' or 'error'
 			)
 		);
@@ -392,7 +392,7 @@ if ($"."current_extensions == false || ($"."current_extensions != false && isset
 		function ".strtolower(preg_replace("/\s/", '_', $ext_info['Name']))."_error_notice() {
 			?>
 			<div class='error'>
-				<p><?php _e('The \"".$ext_info['Name']."\"  plugin cannot work, as the \"".$ext_info['Name']."\" extension already works. Please switch off the extension to have the plugin work', 'framework'); ?></p>
+				<p><?php _e('The \"".$ext_info['Name']."\"  plugin cannot work, as the \"".$ext_info['Name']."\" extension already works. Please switch off the extension to have the plugin work', 'runway'); ?></p>
 			</div>
 			<?php
 		}

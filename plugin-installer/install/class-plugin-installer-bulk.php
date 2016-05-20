@@ -256,12 +256,12 @@ if ( ! class_exists( 'Runway_Bulk_Installer' ) ) {
  		 */
 		public function install_strings() {
 
-			$this->strings['no_package']          = __( 'Install package not available.', 'framework' );
-			$this->strings['downloading_package'] = __( 'Downloading install package from <span class="code">%s</span>&#8230;', 'framework' );
-			$this->strings['unpack_package']      = __( 'Unpacking the package&#8230;', 'framework' );
-			$this->strings['installing_package']  = __( 'Installing the plugin&#8230;', 'framework' );
-			$this->strings['process_failed']      = __( 'Plugin install failed.', 'framework' );
-			$this->strings['process_success']     = __( 'Plugin installed successfully.', 'framework' );
+			$this->strings['no_package']          = __( 'Install package not available.', 'runway' );
+			$this->strings['downloading_package'] = __( 'Downloading install package from <span class="code">%s</span>&#8230;', 'runway' );
+			$this->strings['unpack_package']      = __( 'Unpacking the package&#8230;', 'runway' );
+			$this->strings['installing_package']  = __( 'Installing the plugin&#8230;', 'runway' );
+			$this->strings['process_failed']      = __( 'Plugin install failed.', 'runway' );
+			$this->strings['process_success']     = __( 'Plugin installed successfully.', 'runway' );
 
 		}
 
@@ -272,8 +272,8 @@ if ( ! class_exists( 'Runway_Bulk_Installer' ) ) {
  		 */
 		public function activate_strings() {
 
-			$this->strings['activation_failed']  = __( 'Plugin activation failed.', 'framework' );
-			$this->strings['activation_success'] = __( 'Plugin activated successfully.', 'framework' );
+			$this->strings['activation_failed']  = __( 'Plugin activation failed.', 'runway' );
+			$this->strings['activation_success'] = __( 'Plugin activated successfully.', 'runway' );
 
 		}
 
@@ -382,19 +382,19 @@ if ( ! class_exists( 'Runway_Bulk_Installer_Skin' ) ) {
 
 			/** Automatic activation strings */
 			if ( Runway_Plugin_Installer::$instance->is_automatic ) {
-				$this->upgrader->strings['skin_upgrade_start']        = __( 'The installation and activation process is starting. This process may take a while on some hosts, so please be patient.', 'framework' );
-				$this->upgrader->strings['skin_update_successful']    = __( '%1$s installed and activated successfully.', 'framework' ) . ' <a onclick="%2$s" href="#" class="hide-if-no-js"><span>' . __( 'Show Details', 'framework' ) . '</span><span class="hidden">' . __( 'Hide Details', 'framework' ) . '</span>.</a>';
-				$this->upgrader->strings['skin_upgrade_end']          = __( 'All installations and activations have been completed.', 'framework' );
-				$this->upgrader->strings['skin_before_update_header'] = __( 'Installing and Activating Plugin %1$s (%2$d/%3$d)', 'framework' );
+				$this->upgrader->strings['skin_upgrade_start']        = __( 'The installation and activation process is starting. This process may take a while on some hosts, so please be patient.', 'runway' );
+				$this->upgrader->strings['skin_update_successful']    = __( '%1$s installed and activated successfully.', 'runway' ) . ' <a onclick="%2$s" href="#" class="hide-if-no-js"><span>' . __( 'Show Details', 'runway' ) . '</span><span class="hidden">' . __( 'Hide Details', 'runway' ) . '</span>.</a>';
+				$this->upgrader->strings['skin_upgrade_end']          = __( 'All installations and activations have been completed.', 'runway' );
+				$this->upgrader->strings['skin_before_update_header'] = __( 'Installing and Activating Plugin %1$s (%2$d/%3$d)', 'runway' );
 			}
 			/** Default installation strings */
 			else {
-				$this->upgrader->strings['skin_upgrade_start']        = __( 'The installation process is starting. This process may take a while on some hosts, so please be patient.', 'framework' );
-				$this->upgrader->strings['skin_update_failed_error']  = __( 'An error occurred while installing %1$s: <strong>%2$s</strong>.', 'framework' );
-				$this->upgrader->strings['skin_update_failed']        = __( 'The installation of %1$s failed.', 'framework' );
-				$this->upgrader->strings['skin_update_successful']    = __( '%1$s installed successfully.', 'framework' ) . ' <a onclick="%2$s" href="#" class="hide-if-no-js"><span>' . __( 'Show Details', 'framework' ) . '</span><span class="hidden">' . __( 'Hide Details', 'framework' ) . '</span>.</a>';
-				$this->upgrader->strings['skin_upgrade_end']          = __( 'All installations have been completed.', 'framework' );
-				$this->upgrader->strings['skin_before_update_header'] = __( 'Installing Plugin %1$s (%2$d/%3$d)', 'framework' );
+				$this->upgrader->strings['skin_upgrade_start']        = __( 'The installation process is starting. This process may take a while on some hosts, so please be patient.', 'runway' );
+				$this->upgrader->strings['skin_update_failed_error']  = __( 'An error occurred while installing %1$s: <strong>%2$s</strong>.', 'runway' );
+				$this->upgrader->strings['skin_update_failed']        = __( 'The installation of %1$s failed.', 'runway' );
+				$this->upgrader->strings['skin_update_successful']    = __( '%1$s installed successfully.', 'runway' ) . ' <a onclick="%2$s" href="#" class="hide-if-no-js"><span>' . __( 'Show Details', 'runway' ) . '</span><span class="hidden">' . __( 'Hide Details', 'runway' ) . '</span>.</a>';
+				$this->upgrader->strings['skin_upgrade_end']          = __( 'All installations have been completed.', 'runway' );
+				$this->upgrader->strings['skin_before_update_header'] = __( 'Installing Plugin %1$s (%2$d/%3$d)', 'runway' );
 			}
 
 		}
@@ -470,7 +470,7 @@ if ( ! class_exists( 'Runway_Bulk_Installer_Skin' ) ) {
 			$complete = array();
 			foreach ( Runway_Plugin_Installer::$instance->plugins as $plugin ) {
 				if ( ! is_plugin_active( $plugin['file_path'] ) ) {
-					echo '<p><a href="' . esc_url( add_query_arg( 'page', Runway_Plugin_Installer::$instance->menu, admin_url( Runway_Plugin_Installer::$instance->parent_url_slug ) ) ) . '" title="' . esc_attr( Runway_Plugin_Installer::$instance->strings['return'] ) . '" target="_parent">' . __( Runway_Plugin_Installer::$instance->strings['return'], 'framework' ) . '</a></p>';
+					echo '<p><a href="' . esc_url( add_query_arg( 'page', Runway_Plugin_Installer::$instance->menu, admin_url( Runway_Plugin_Installer::$instance->parent_url_slug ) ) ) . '" title="' . esc_attr( Runway_Plugin_Installer::$instance->strings['return'] ) . '" target="_parent">' . __( Runway_Plugin_Installer::$instance->strings['return'], 'runway' ) . '</a></p>';
 					$complete[] = $plugin;
 					break;
 				}
@@ -485,7 +485,7 @@ if ( ! class_exists( 'Runway_Bulk_Installer_Skin' ) ) {
 
 			/** All plugins are active, so we display the complete string and hide the menu to protect users */
 			if ( empty( $complete ) ) {
-				echo '<p>' .  sprintf( Runway_Plugin_Installer::$instance->strings['complete'], '<a href="' . esc_url( admin_url() ) . '" title="' . esc_attr( __( 'Return to the Dashboard', 'framework' ) ) . '">' . __( 'Return to the Dashboard', 'framework' ) . '</a>' ) . '</p>';
+				echo '<p>' .  sprintf( Runway_Plugin_Installer::$instance->strings['complete'], '<a href="' . esc_url( admin_url() ) . '" title="' . esc_attr( __( 'Return to the Dashboard', 'runway' ) ) . '">' . __( 'Return to the Dashboard', 'runway' ) . '</a>' ) . '</p>';
 				//echo '<style type="text/css">#adminmenu .wp-submenu li.current { display: none !important; }</style>';
 			}
 
