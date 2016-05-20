@@ -1472,11 +1472,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 		 */
 		public function no_items() {
 
-			$start = __( 'No plugins to install or activate.', 'runway');
-			$title = __('Return to the Dashboard', 'runway');
-			echo $start . '<a href="'. esc_url( admin_url() ) .'" title="'. esc_attr( $title ) .'">'. $title .'</a>';
-			//echo '<style type="text/css">#adminmenu .wp-submenu li.current { display: none !important; }</style>';
-
+			echo __( 'No plugins to install or activate.', 'runway') . '<a href="'. esc_url( admin_url() ) .'" title="'. esc_attr( $title ) .'">'. __('Return to the Dashboard', 'runway') .'</a>';
 		}
 
 		/**
