@@ -13,8 +13,8 @@
 #-----------------------------------------------------------------
 
 require_once('install/class-plugin-installer.php');
-require_once('class-tgm-updater-config.php');
-require_once('class-tgm-updater.php');
+require_once('update/class-tgm-updater-config.php');
+require_once('update/class-tgm-updater.php');
 
 // Settings
 $fields = array(
