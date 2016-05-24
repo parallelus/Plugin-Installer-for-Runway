@@ -91,16 +91,16 @@ function plugin_installer_report($reports_object){
 		'source' => 'Layouts Manager',
 		'report_key' => 'layouts_dir_exists',
 		'path' => $plugins_dir,
-		'success_message' => __('Plugin Installer directory', 'runway') . ' (' . $plugins_dir . ') ' . __('is exists', 'runway') . '.',
-		'fail_message' => __('Plugin Installer directory', 'runway') . ' (' . $plugins_dir . ') ' . __('is not exists', 'runway') . '.',
+		'success_message' => sprintf( __('Plugin Installer directory (%s) is exists.', 'runway'), $plugins_dir ),
+		'fail_message' => sprintf( __('Plugin Installer directory (%s) is not exists.', 'runway'), $plugins_dir ),
 	), 'DIR_EXISTS' );
 
 	$reports_object->assign_report(array(
 		'source' => 'Layouts Manager',
 		'report_key' => 'layouts_dir_writable',
 		'path' => $plugins_dir,
-		'success_message' => __('Plugin Installer directory', 'runway') . ' (' . $plugins_dir . ') ' . __('is writable', 'runway') . '.',
-		'fail_message' => __('Plugin Installer directory', 'runway') . ' (' . $plugins_dir . ') ' . __('is not writable', 'runway') . '.',
+		'success_message' => sprintf( __('Plugin Installer directory (%s) is writable.', 'runway'), $plugins_dir ),
+		'fail_message' => sprintf( __('Plugin Installer directory (%s) is not writable.', 'runway'), $plugins_dir ),
 	), 'IS_WRITABLE' );
 
 }

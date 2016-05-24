@@ -470,7 +470,7 @@ if ( ! class_exists( 'Runway_Bulk_Installer_Skin' ) ) {
 			$complete = array();
 			foreach ( Runway_Plugin_Installer::$instance->plugins as $plugin ) {
 				if ( ! is_plugin_active( $plugin['file_path'] ) ) {
-					echo '<p><a href="' . esc_url( add_query_arg( 'page', Runway_Plugin_Installer::$instance->menu, admin_url( Runway_Plugin_Installer::$instance->parent_url_slug ) ) ) . '" title="' . esc_attr( Runway_Plugin_Installer::$instance->strings['return'] ) . '" target="_parent">' . __( Runway_Plugin_Installer::$instance->strings['return'], 'runway' ) . '</a></p>';
+					echo '<p><a href="' . esc_url( add_query_arg( 'page', Runway_Plugin_Installer::$instance->menu, admin_url( Runway_Plugin_Installer::$instance->parent_url_slug ) ) ) . '" title="' . esc_attr( Runway_Plugin_Installer::$instance->strings['return'] ) . '" target="_parent">' . sprintf( __( '%s', 'runway' ), Runway_Plugin_Installer::$instance->strings['return'] ) . '</a></p>';
 					$complete[] = $plugin;
 					break;
 				}
