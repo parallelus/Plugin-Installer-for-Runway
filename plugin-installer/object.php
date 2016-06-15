@@ -116,18 +116,20 @@ class Plugin_Installer_Object extends Runway_Object {
 
 					// get info from plugins
 					$file = array_keys($plugin_slug_installed, $slug.'/');
-					$plugin_wp_repository[$slug] = get_plugin_data(WP_PLUGIN_DIR .'/'. $file[0]);
-					$plugin_wp_repository[$slug]['Title'] = $plugin_wp_repository[$slug]['Name'];
-					$plugin_wp_repository[$slug]['slug'] = $file[0];
-					$plugin_wp_repository[$slug]['source'] = RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL.$val['slug'].'/';
+					$plugin_data = get_plugin_data(WP_PLUGIN_DIR .'/'. $file[0]);
+
+					$plugin_wp_repository[$key]['Title']  = $plugin_data['Name'];
+					$plugin_wp_repository[$key]['Name']   = $plugin_data['Name'];
+					$plugin_wp_repository[$key]['slug']   = $file[0];
+					$plugin_wp_repository[$key]['source'] = RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL.$val['slug'].'/';
 
 				} else {
 
 					// get info from wp api
 					$args = array(
-						'slug' => $slug,
+						'slug'   => $slug,
 						'fields' => array(
-							'description' => true,
+							'description'       => true,
 							'short_description' => true
 						)
 					);
@@ -137,7 +139,7 @@ class Plugin_Installer_Object extends Runway_Object {
 						array(
 							'body' => array(
 								'timeout' => 15,
-								'action' => 'plugin_information',
+								'action'  => 'plugin_information',
 								'request' => serialize((object)$args)
 							)
 						)
@@ -152,9 +154,9 @@ class Plugin_Installer_Object extends Runway_Object {
 							if ( $plugin_wp ) {
 								$plugin_index = array_search($slug.'/', $plugin_slug_installed);
 
-								$plugin_wp_repository[$key]['Title'] = $plugin_wp->name;
-								$plugin_wp_repository[$key]['Name'] = $plugin_wp->name;
-								$plugin_wp_repository[$key]['slug'] = !empty($plugin_index)? $plugin_index : $slug;
+								$plugin_wp_repository[$key]['Title']  = $plugin_wp->name;
+								$plugin_wp_repository[$key]['Name']   = $plugin_wp->name;
+								$plugin_wp_repository[$key]['slug']   = !empty($plugin_index)? $plugin_index : $slug;
 								$plugin_wp_repository[$key]['source'] = RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL.$slug.'/';
 
 							}
