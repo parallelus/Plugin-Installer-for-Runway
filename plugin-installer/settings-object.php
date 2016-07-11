@@ -20,7 +20,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'init', array( $this, 'register_plugins_in_dir' ) );
 		add_action( 'tgmpa_register', array($this, 'required_theme_plugins' ) );
-		add_action( 'admin_notices', array($this, 'activate_pluging_first_time') );
+		//add_action( 'admin_notices', array($this, 'activate_pluging_first_time') );
 
 	}
 
