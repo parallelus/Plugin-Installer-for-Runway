@@ -776,7 +776,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 							array(
 								'install'  => ( current_user_can( 'install_plugins' ) ) ? $show_install_link : '',
 								'activate' => ( current_user_can( 'activate_plugins' ) ) ? $show_activate_link : '',
-								'dismiss'  => '<a class="dismiss-notice" href="' . esc_url( add_query_arg( 'tgmpa-dismiss', 'dismiss_admin_notices' ) ) . '" target="_parent">' . __( 'Dismiss this notice', 'runway' ) . '</a>',
+								'dismiss'  => '<a class="dismiss-notice" href="' . esc_url( wp_nonce_url( add_query_arg( 'tgmpa-dismiss', 'dismiss_admin_notices' ), 'tgmpa-dismiss-' . get_current_user_id() ) ) . '" target="_parent">' . __( 'Dismiss this notice', 'runway' ) . '</a>',
 							)
 						);
 						$action_links = array_filter( $action_links ); // Remove any empty array items
@@ -841,7 +841,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 		 */
 		public function dismiss() {
 
-			if ( isset( $_GET[sanitize_key( 'tgmpa-dismiss' )] ) )
+			if ( isset( $_GET[ 'tgmpa-dismiss' ] ) && check_admin_referer( 'tgmpa-dismiss-' . get_current_user_id() ) )
 				update_user_meta( get_current_user_id(), 'tgmpa_dismissed_notice', 1 );
 
 		}
