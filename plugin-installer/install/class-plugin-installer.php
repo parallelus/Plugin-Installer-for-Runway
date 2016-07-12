@@ -162,7 +162,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 				'activate_link' 				  => _n_noop( 'Activate installed plugin', 'Activate installed plugins', 'runway' ),
 				'return'                          => __( 'Return to Required Plugins Installer', 'runway' ),
 				'plugin_activated'                => __( 'Plugin activated successfully.', 'runway' ),
-				'complete'                        => __( 'All plugins installed and activated successfully. %1$s', 'runway' ),
+				'complete'                        => __( 'All plugins installed successfully. %1$s', 'runway' ),
 			);
 
 			/** Annouce that the class is ready, and pass the object (for advanced use) */
@@ -568,7 +568,10 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 					//echo '<style type="text/css">#adminmenu .wp-submenu li.current { display: none !important; }</style>';
 				}
 
-				$this->do_plugin_activate( $themePlugin_info );
+				if ( self::plugin_has_to_be_activated_after_installation( $plugin['slug'] ) ) {
+					$this->do_plugin_activate( $themePlugin_info );
+				}
+
 				return true;
 			}
 			/** Checks for actions from hover links to process the activation */
@@ -580,6 +583,27 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 			}
 
 			return false;
+
+		}
+
+		/**
+		 * Check if plugin has to be activated after installation
+		 *
+		 * @param string $plugin_slug
+		 *
+		 * @return bool
+		 */
+		public static function plugin_has_to_be_activated_after_installation( $plugin_slug ) {
+
+			global $themePlugins;
+
+			if ( array_key_exists( $plugin_slug, $themePlugins )
+			     && filter_var( $themePlugins[ $plugin_slug ]['required'], FILTER_VALIDATE_BOOLEAN )
+			) {
+				return true;
+			} else {
+				return false;
+			}
 
 		}
 
@@ -1752,6 +1776,15 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 			foreach ( $plugins_to_activate as $i => $array ) {
 				if ( ! preg_match( '|.php$|', $array[0] ) ) // Plugins that haven't been installed yet won't have the correct file path
 					unset( $plugins_to_activate[$i] );
+			}
+
+			if ( 'tgmpa-bulk-install' === $this->current_action() ) {
+				// activate only required plugins after installation process
+				foreach ( $plugins_to_activate as $i => $array ) {
+					if ( ! Runway_Plugin_Installer::plugin_has_to_be_activated_after_installation( $array[0] ) ) {
+						unset( $plugins_to_activate[ $i ] );
+					}
+				}
 			}
 
 			/** Return early if there are no plugins to activate */
