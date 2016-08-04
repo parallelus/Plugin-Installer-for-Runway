@@ -13,6 +13,8 @@
 #-----------------------------------------------------------------
 
 require_once('install/class-plugin-installer.php');
+require_once('install/class-tgmpa-list-table.php');
+require_once('install/class-plugin-installer-skin.php');
 require_once('update/class-tgm-updater-config.php');
 require_once('update/class-tgm-updater.php');
 
