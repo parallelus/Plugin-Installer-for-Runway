@@ -112,20 +112,22 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 						$plugin['name'] = $table_data[ $i ]['plugin'];
 					}
 
-					if ( isset( $plugin['external_url'] ) ) {
+					if ( isset( $plugin['external_url'] ) && ! empty( $plugin['external_url'] ) ) {
 						/** The plugin is linked to an external source */
 						$table_data[ $i ]['source'] = __( 'External Link', 'runway' );
 					} elseif ( isset( $plugin['source'] ) ) {
-						/** The plugin must be from a private repository */
-						if ( preg_match( '|^http(s)?://|', $plugin['source'] ) ) {
+						/** The plugin is from the WordPress repository */
+						if ( strstr( $plugin['source'], RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL ) !== false  ) {
+							$table_data[ $i ]['source'] = __( 'WordPress Repository', 'runway' );
+						}/** The plugin must be from a private repository */
+						else if ( preg_match( '|^http(s)?://|', $plugin['source'] ) ) {
 							$table_data[ $i ]['source'] = __( 'Private Repository', 'runway' );
 						} /** The plugin is pre-packaged with the theme */
 						else {
 							$table_data[ $i ]['source'] = __( 'Pre-Packaged', 'runway' );
 						}
-					} /** The plugin is from the WordPress repository */
-					else {
-						$table_data[ $i ]['source'] = __( 'WordPress Repository', 'runway' );
+					} else {
+						$table_data[ $i ]['source'] = __( 'Unknown', 'runway' );
 					}
 
 					$table_data[ $i ]['type'] = $plugin['required'] == 'true' ? __( 'Required', 'runway' ) : __( 'Recommended', 'runway' );
