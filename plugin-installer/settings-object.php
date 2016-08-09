@@ -134,7 +134,10 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
   	}
 
   	public function update_options() {
-  		update_option($this->option_key, $this->plugin_installer_options);
+  		$old_value = get_option( $this->option_key );
+	    if ( $old_value != $this->plugin_installer_options ) {
+		    update_option($this->option_key, $this->plugin_installer_options);
+	    }
   	}
 
   	function register_plugins_in_dir(){
