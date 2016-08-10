@@ -661,8 +661,6 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 			/** Process the bulk installation submissions */
 			$installer->bulk_install( $sources );
 
-			unset( $_POST ); // Reset the $_POST variable in case user wants to perform one action after another
-
 		}
 
 		public function process_bulk_activate() {
