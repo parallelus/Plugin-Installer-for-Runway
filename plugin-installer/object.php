@@ -15,7 +15,8 @@ class Plugin_Installer_Object extends Runway_Object {
 		$this->option_key_registered = $settings['option_key'].'_registered';
 		$this->option_key_registered_all = $settings['option_key'].'_registered_all';
 
-		$this->plugin_installer_options = get_option( $this->option_key );
+		$options = get_option( $this->option_key );
+		$this->plugin_installer_options = empty( $options ) ? array() : $options;
 		$this->plugins_zip_path = get_template_directory().'/extensions/plugin-installer/plugins/';
 		$this->extensions_zip_path = get_template_directory().'/extensions/plugin-installer/extensions/';
 
@@ -107,63 +108,68 @@ class Plugin_Installer_Object extends Runway_Object {
 		}
 
 		$plugin_wp_repository = array();
-		foreach($this->plugin_installer_options['plugin_options'] as $key => $val) {
-			if( !empty($key) && isset($val['slug']) && !empty($val['slug']) ) {
-				$slug = $val['slug'];
 
-				// check if plugin is already installed
-				if ( in_array($slug .'/', $plugin_slug_installed) ) {
+		if (array_key_exists('plugin_options', $this->plugin_installer_options)
+		    && is_array($this->plugin_installer_options['plugin_options'])) {
+			foreach($this->plugin_installer_options['plugin_options'] as $key => $val) {
+				if( !empty($key) && isset($val['slug']) && !empty($val['slug']) ) {
+					$slug = $val['slug'];
 
-					// get info from plugins
-					$file = array_keys($plugin_slug_installed, $slug.'/');
-					$plugin_data = get_plugin_data(WP_PLUGIN_DIR .'/'. $file[0]);
+					// check if plugin is already installed
+					if ( in_array($slug .'/', $plugin_slug_installed) ) {
 
-					$plugin_wp_repository[$key]['Title']  = $plugin_data['Name'];
-					$plugin_wp_repository[$key]['Name']   = $plugin_data['Name'];
-					$plugin_wp_repository[$key]['slug']   = $file[0];
-					$plugin_wp_repository[$key]['source'] = RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL.$val['slug'].'/';
+						// get info from plugins
+						$file = array_keys($plugin_slug_installed, $slug.'/');
+						$plugin_data = get_plugin_data(WP_PLUGIN_DIR .'/'. $file[0]);
 
-				} else {
+						$plugin_wp_repository[$key]['Title']  = $plugin_data['Name'];
+						$plugin_wp_repository[$key]['Name']   = $plugin_data['Name'];
+						$plugin_wp_repository[$key]['slug']   = $file[0];
+						$plugin_wp_repository[$key]['source'] = RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL.$val['slug'].'/';
 
-					// get info from wp api
-					$args = array(
-						'slug'   => $slug,
-						'fields' => array(
-							'description'       => true,
-							'short_description' => true
-						)
-					);
+					} else {
 
-					$response = wp_remote_post(
-						RUNWAY_PLUGIN_INSTALLER_WP_API_URL,
-						array(
-							'body' => array(
-								'timeout' => 15,
-								'action'  => 'plugin_information',
-								'request' => serialize((object)$args)
+						// get info from wp api
+						$args = array(
+							'slug'   => $slug,
+							'fields' => array(
+								'description'       => true,
+								'short_description' => true
 							)
-						)
-					);
+						);
 
-					if ( !is_wp_error($response) ) {
-						$plugin_wp = unserialize(wp_remote_retrieve_body($response));
-						if ( !is_object($plugin_wp) ) {
-							echo '<div class="error"><p>'.__('An error has occurred', 'runway').'</p></div>';
-						}
-						else {
-							if ( $plugin_wp ) {
-								$plugin_index = array_search($slug.'/', $plugin_slug_installed);
+						$response = wp_remote_post(
+							RUNWAY_PLUGIN_INSTALLER_WP_API_URL,
+							array(
+								'body' => array(
+									'timeout' => 15,
+									'action'  => 'plugin_information',
+									'request' => serialize((object)$args)
+								)
+							)
+						);
 
-								$plugin_wp_repository[$key]['Title']  = $plugin_wp->name;
-								$plugin_wp_repository[$key]['Name']   = $plugin_wp->name;
-								$plugin_wp_repository[$key]['slug']   = !empty($plugin_index)? $plugin_index : $slug;
-								$plugin_wp_repository[$key]['source'] = RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL.$slug.'/';
+						if ( !is_wp_error($response) ) {
+							$plugin_wp = unserialize(wp_remote_retrieve_body($response));
+							if ( !is_object($plugin_wp) ) {
+								echo '<div class="error"><p>'.__('An error has occurred', 'runway').'</p></div>';
+							}
+							else {
+								if ( $plugin_wp ) {
+									$plugin_index = array_search($slug.'/', $plugin_slug_installed);
 
+									$plugin_wp_repository[$key]['Title']  = $plugin_wp->name;
+									$plugin_wp_repository[$key]['Name']   = $plugin_wp->name;
+									$plugin_wp_repository[$key]['slug']   = !empty($plugin_index)? $plugin_index : $slug;
+									$plugin_wp_repository[$key]['source'] = RUNWAY_PLUGIN_INSTALLER_WP_REPOSITORY_URL.$slug.'/';
+
+								}
 							}
 						}
-					}
-					else {
-						echo '<div class="error"><p>'.__('An error has occurred', 'runway').'</p></div>';
+						else {
+							echo '<div class="error"><p>'.__('An error has occurred', 'runway').'</p></div>';
+						}
+
 					}
 
 				}
