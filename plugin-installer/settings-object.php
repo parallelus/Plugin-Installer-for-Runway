@@ -328,9 +328,66 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 				$pathInfo   = pathInfo( $sourcePath );
 				$parentPath = $pathInfo['dirname'];
 
-				$ext_info           = $extm->get_extension_data( $extm->extensions_dir . $extension . '/load.php' );
-				$ext                = $this->make_plugin_header( $ext_info, $extension . '/load.php' );
-				$load_extension_str = <<< 'EOD'
+				$ext_info       = $extm->get_extension_data( $extm->extensions_dir . $extension . '/load.php' );
+				$ext            = $this->make_plugin_header( $ext_info, $extension . '/load.php' );
+				$load_extension = $this->make_extension_loader( $extension );
+
+				if ( ! function_exists( 'WP_Filesystem' ) ) {
+					require_once( ABSPATH . 'wp-admin/includes/file.php' );
+				}
+
+				WP_Filesystem();
+				global $wp_filesystem;
+
+				if ( ! $wp_filesystem->is_dir( dirname( __FILE__ ) . '/extensions' ) ) {
+					$wp_filesystem->mkdir( dirname( __FILE__ ) . '/extensions' );
+				}
+
+				$permissions = $wp_filesystem->getchmod( dirname( __FILE__ ) . '/extensions' );
+				if ( $permissions < '755' ) {
+					$wp_filesystem->chmod( dirname( __FILE__ ) . '/extensions', 0755 );
+				}
+
+				if ( class_exists( 'ZipArchive', false ) ) {
+					$z = new ZipArchive();
+					if ( $z->open( $zipPath, ZIPARCHIVE::CREATE ) ) {
+						$z->addEmptyDir( $extension );
+						$z->addFromString( $extension . '/' . $extension . '.php', $ext );
+						$z->addFromString( $extension . '/load-extension.php', $load_extension );
+						self::ext_to_plugin( $sourcePath, $z, strlen( "$parentPath/" ), $extension . '/' );
+						$z->close();
+					}
+				} else {
+					require_once( ABSPATH . 'wp-admin/includes/class-pclzip.php' );
+
+					$temp_dir          = get_temp_dir();
+					$tmp_extension_dir = get_temp_dir() . 'extensions/' . $extension;
+
+					$wp_filesystem->rmdir( $temp_dir . 'extensions' );
+					$wp_filesystem->mkdir( $temp_dir . 'extensions' );
+					$wp_filesystem->mkdir( $tmp_extension_dir );
+					$wp_filesystem->mkdir( $tmp_extension_dir . '/' . $extension );
+
+					copy_dir( $sourcePath, $tmp_extension_dir . '/' . $extension );
+					$wp_filesystem->put_contents( $tmp_extension_dir . '/' . $extension . '.php', $ext );
+					$wp_filesystem->put_contents( $tmp_extension_dir . '/load-extension.php', $load_extension );
+
+					$z = new PclZip( $zipPath );
+					$z->create( array( $tmp_extension_dir ), '', $temp_dir . 'extensions' );
+
+					$wp_filesystem->rmdir( get_temp_dir() . 'extensions' );
+				}
+
+			}
+		} else {
+			return false;
+		}
+
+	}
+
+	private function make_extension_loader( $extension ) {
+
+		$load_extension_str = <<< 'EOD'
 <?php
 
 global $pagenow;
@@ -347,29 +404,8 @@ if (
 }
 
 EOD;
-				$load_extension     = sprintf( $load_extension_str, $extension );
 
-				if ( ! is_dir( dirname( __FILE__ ) . '/extensions' ) ) {
-					mkdir( dirname( __FILE__ ) . '/extensions' );
-				}
-
-				$permissions = substr( sprintf( '%o', fileperms( dirname( __FILE__ ) . '/extensions' ) ), -4 );
-				if ( $permissions < '0755' ) {
-					chmod( dirname( __FILE__ ) . '/extensions', 0755 );
-				}
-
-				$z = new ZipArchive();
-				if ( $z->open( $zipPath, ZIPARCHIVE::CREATE ) ) {
-					$z->addEmptyDir( $extension );
-					$z->addFromString( $extension . '/' . $extension . '.php', $ext );
-					$z->addFromString( $extension . '/load-extension.php', $load_extension );
-					self::ext_to_plugin( $sourcePath, $z, strlen( "$parentPath/" ), $extension . '/' );
-					$z->close();
-				}
-			}
-		} else {
-			return false;
-		}
+		return sprintf( $load_extension_str, $extension );
 
 	}
 
