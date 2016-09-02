@@ -195,24 +195,6 @@ class Plugin_Installer_Object extends Runway_Object {
 
 	}
 
-	public function scandir_recursive( $dir, $results = array() ) {
-
-		$files = scandir( $dir );
-
-		foreach ( $files as $key => $value ) {
-			$path = realpath( $dir . '/' . $value );
-			if ( ! is_dir( $path ) ) {
-				$results[] = $path;
-			} else if ( $value != "." && $value != ".." ) {
-				$this->scandir_recursive( $path, $results );
-				$results[] = $path;
-			}
-		}
-
-		return $results;
-
-	}
-
 	private function unzip_file_ziparchive( $plugins_zip_path, $plug_file ) {
 
 		$ret = array( 'main_file' => '', 'file_data' => '' );
@@ -247,23 +229,28 @@ class Plugin_Installer_Object extends Runway_Object {
 		$ret = array( 'main_file' => '', 'file_data' => '' );
 
 		require_once( ABSPATH . 'wp-admin/includes/class-pclzip.php' );
+		$tmp_dir = get_temp_dir() . 'extracted_plugins/' . time();
+
 		if ( $zip = new PclZip( $plugins_zip_path . $plug_file ) ) {
-			if ( $info_extracted = $zip->extract( get_temp_dir() . 'extracted_plugins' ) ) {
-				$list = $this->scandir_recursive( get_temp_dir() . 'extracted_plugins/' . $info_extracted[0]['stored_filename'] );//out($list);
-				foreach ( $list as $source ) {
-					if ( strpos( $source, '.php' ) !== false ) {
-						$info_source  = pathinfo( $source );
-						$file_content = file_get_contents( $source );
+			if ( $info_extracted = $zip->extract( $tmp_dir ) ) {
+				foreach ( $info_extracted as $source ) {
+					if ( $source['folder'] == true ) {
+						continue;
+					}
+
+					if ( strpos( $source['filename'], '.php' ) !== false ) {
+						$file_content = $wp_filesystem->get_contents( $source['filename'] );
 						if ( strpos( $file_content, 'Plugin Name' ) ) {
-							$ret['main_file'] = $info_extracted[0]['stored_filename'] . $info_source['basename'];//out($ret['main_file']);
+							$ret['main_file'] = $source['stored_filename'];
 							$ret['file_data'] = $file_content;
+							break;
 						}
 					}
 				}
 			}
 		}
 
-		$wp_filesystem->rmdir( get_temp_dir() . 'extracted_plugins' );
+		$wp_filesystem->rmdir( $tmp_dir, true );
 
 		return $ret;
 

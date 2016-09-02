@@ -363,7 +363,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 					$temp_dir          = get_temp_dir();
 					$tmp_extension_dir = get_temp_dir() . 'extensions/' . $extension;
 
-					$wp_filesystem->rmdir( $temp_dir . 'extensions' );
+					$wp_filesystem->rmdir( $temp_dir . 'extensions', true );
 					$wp_filesystem->mkdir( $temp_dir . 'extensions' );
 					$wp_filesystem->mkdir( $tmp_extension_dir );
 					$wp_filesystem->mkdir( $tmp_extension_dir . '/' . $extension );
@@ -375,7 +375,7 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 					$z = new PclZip( $zipPath );
 					$z->create( array( $tmp_extension_dir ), '', $temp_dir . 'extensions' );
 
-					$wp_filesystem->rmdir( get_temp_dir() . 'extensions' );
+					$wp_filesystem->rmdir( get_temp_dir() . 'extensions', true );
 				}
 
 			}
