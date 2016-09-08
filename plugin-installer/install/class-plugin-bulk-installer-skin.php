@@ -125,8 +125,7 @@ if ( ! class_exists( 'Runway_Bulk_Installer_Skin' ) ) {
 				     style="vertical-align:middle;"/>
 			</h4>
 			<script>jQuery('<?php echo '.waiting-' . esc_js( $this->upgrader->update_current ); ?>').show();</script>
-			<div class="update-messages hide-if-js"
-			     id="progress-<?php echo esc_attr( $this->upgrader->update_current ); ?>"></div>
+			<div class="update-messages hide-if-js" id="progress-<?php echo esc_attr( $this->upgrader->update_current ); ?>">
 			<p>
 
 			<?php
