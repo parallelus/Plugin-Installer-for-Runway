@@ -473,9 +473,11 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 					return true;
 				}
 
-				if ( ! WP_Filesystem( $creds ) ) {
-					request_filesystem_credentials( $url, $method, true, false, $fields ); // Setup WP_Filesystem
-					return true;
+				if ( ! function_exists( 'get_runway_wp_filesystem' ) ) {
+					if ( ! WP_Filesystem( $creds ) ) {
+						request_filesystem_credentials( $url, $method, true, false, $fields ); // Setup WP_Filesystem
+						return true;
+					}
 				}
 
 				require_once ABSPATH . 'wp-admin/includes/plugin-install.php'; // Need for plugins_api

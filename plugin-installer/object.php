@@ -219,17 +219,21 @@ class Plugin_Installer_Object extends Runway_Object {
 
 	private function unzip_file_pclzip( $plugins_zip_path, $plug_file ) {
 
-		if ( ! function_exists( 'WP_Filesystem' ) ) {
-			require_once( ABSPATH . 'wp-admin/includes/file.php' );
+		if ( function_exists( 'get_runway_wp_filesystem' ) ) {
+			$wp_filesystem = get_runway_wp_filesystem();
+		} else {
+			if ( ! function_exists( 'WP_Filesystem' ) ) {
+				require_once( ABSPATH . 'wp-admin/includes/file.php' );
+			}
+
+			WP_Filesystem();
+			global $wp_filesystem;
 		}
-
-		WP_Filesystem();
-		global $wp_filesystem;
-
+		
 		$ret = array( 'main_file' => '', 'file_data' => '' );
 
 		require_once( ABSPATH . 'wp-admin/includes/class-pclzip.php' );
-		$tmp_dir = get_temp_dir() . 'extracted_plugins/' . time();
+		$tmp_dir = apply_filters( 'rf_prepared_path', get_temp_dir() . 'extracted_plugins/' . time() );
 
 		if ( $zip = new PclZip( $plugins_zip_path . $plug_file ) ) {
 			if ( $info_extracted = $zip->extract( $tmp_dir ) ) {
@@ -239,7 +243,7 @@ class Plugin_Installer_Object extends Runway_Object {
 					}
 
 					if ( strpos( $source['filename'], '.php' ) !== false ) {
-						$file_content = $wp_filesystem->get_contents( $source['filename'] );
+						$file_content = $wp_filesystem->get_contents( apply_filters( 'rf_prepared_path', $source['filename'] ) );
 						if ( strpos( $file_content, 'Plugin Name' ) ) {
 							$ret['main_file'] = $source['stored_filename'];
 							$ret['file_data'] = $file_content;
@@ -269,11 +273,16 @@ class Plugin_Installer_Object extends Runway_Object {
 		$main_file = $res['main_file'];
 		$file_data = $res['file_data'];
 
-		if ( ! function_exists( 'WP_Filesystem' ) ) {
-			require_once( ABSPATH . 'wp-admin/includes/file.php' );
+		if ( function_exists( 'get_runway_wp_filesystem' ) ) {
+			$wp_filesystem = get_runway_wp_filesystem();
+		} else {
+			if ( ! function_exists( 'WP_Filesystem' ) ) {
+				require_once( ABSPATH . 'wp-admin/includes/file.php' );
+			}
+
+			WP_Filesystem();
+			global $wp_filesystem;
 		}
-		WP_Filesystem();
-		global $wp_filesystem;
 
 		if ( $file_data != '' ) {
 			$default_headers = array(
@@ -296,7 +305,9 @@ class Plugin_Installer_Object extends Runway_Object {
 			$plugin_info['file']       = $info['basename'];
 
 			if ( file_exists( $this->plugins_path . '/' . $plugin_info['slug'] ) ) {
-				$file_data                      = $wp_filesystem->get_contents( $this->plugins_path . '/' . $plugin_info['slug'] );
+				$file_data                      = $wp_filesystem->get_contents(
+					apply_filters( 'rf_prepared_path', $this->plugins_path . '/' . $plugin_info['slug'] )
+				);
 				$plugin_installed_info          = $this->get_data_by_headers( $file_data, $default_headers );
 				$plugin_info['install_version'] = $plugin_installed_info['Version'];
 			} else {

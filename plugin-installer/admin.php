@@ -35,6 +35,10 @@ if ( ! in_array( $this->navigation, array( 'add-plugin' ) ) ) {
 global $plugin_installer, $plugin_installer_admin, $themePlugins;
 $rpi_class = new Runway_Plugin_Installer;
 
+if ( function_exists( 'runway_filesystem_method' ) ) {
+	add_filter( 'filesystem_method', 'runway_filesystem_method' );
+}
+
 $link     = admin_url( 'admin.php?page=plugin-installer' );
 $redirect = '<script type="text/javascript">window.location = "' . esc_url_raw( $link ) . '";</script>';
 

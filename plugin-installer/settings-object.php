@@ -331,21 +331,27 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 				$ext_info       = $extm->get_extension_data( $extm->extensions_dir . $extension . '/load.php' );
 				$ext            = $this->make_plugin_header( $ext_info, $extension . '/load.php' );
 				$load_extension = $this->make_extension_loader( $extension );
+				
+				if ( function_exists( 'get_runway_wp_filesystem' ) ) {
+					$wp_filesystem = get_runway_wp_filesystem();
+				} else {
+					if ( ! function_exists( 'WP_Filesystem' ) ) {
+						require_once( ABSPATH . 'wp-admin/includes/file.php' );
+					}
 
-				if ( ! function_exists( 'WP_Filesystem' ) ) {
-					require_once( ABSPATH . 'wp-admin/includes/file.php' );
+					WP_Filesystem();
+					global $wp_filesystem;
 				}
 
-				WP_Filesystem();
-				global $wp_filesystem;
+				$extensions_path = apply_filters( 'rf_prepared_path', dirname( __FILE__ ) . '/extensions' );
 
-				if ( ! $wp_filesystem->is_dir( dirname( __FILE__ ) . '/extensions' ) ) {
-					$wp_filesystem->mkdir( dirname( __FILE__ ) . '/extensions' );
+				if ( ! $wp_filesystem->is_dir( $extensions_path ) ) {
+					$wp_filesystem->mkdir( $extensions_path );
 				}
 
-				$permissions = $wp_filesystem->getchmod( dirname( __FILE__ ) . '/extensions' );
+				$permissions = $wp_filesystem->getchmod( $extensions_path );
 				if ( $permissions < '755' ) {
-					$wp_filesystem->chmod( dirname( __FILE__ ) . '/extensions', 0755 );
+					$wp_filesystem->chmod( $extensions_path, 0755 );
 				}
 
 				if ( class_exists( 'ZipArchive', false ) ) {
@@ -360,22 +366,23 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 				} else {
 					require_once( ABSPATH . 'wp-admin/includes/class-pclzip.php' );
 
-					$temp_dir          = get_temp_dir();
-					$tmp_extension_dir = get_temp_dir() . 'extensions/' . $extension;
+					$temp_dir          = apply_filters( 'rf_prepared_path', get_temp_dir() );
+					$tmp_extension_dir = $temp_dir . 'extensions/' . $extension;
 
 					$wp_filesystem->rmdir( $temp_dir . 'extensions', true );
 					$wp_filesystem->mkdir( $temp_dir . 'extensions' );
 					$wp_filesystem->mkdir( $tmp_extension_dir );
 					$wp_filesystem->mkdir( $tmp_extension_dir . '/' . $extension );
 
-					copy_dir( $sourcePath, $tmp_extension_dir . '/' . $extension );
+					//copy_dir( $sourcePath, $tmp_extension_dir . '/' . $extension );
+					$this->add_to_tmp_dir_r( $sourcePath, $tmp_extension_dir . '/' . $extension );
 					$wp_filesystem->put_contents( $tmp_extension_dir . '/' . $extension . '.php', $ext );
 					$wp_filesystem->put_contents( $tmp_extension_dir . '/load-extension.php', $load_extension );
 
 					$z = new PclZip( $zipPath );
 					$z->create( array( $tmp_extension_dir ), '', $temp_dir . 'extensions' );
 
-					$wp_filesystem->rmdir( get_temp_dir() . 'extensions', true );
+					$wp_filesystem->rmdir( $temp_dir . 'extensions', true );
 				}
 
 			}
@@ -383,6 +390,36 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 			return false;
 		}
 
+	}
+
+	private function add_to_tmp_dir_r( $path, $path_in_tmp, $exclude = array() ) {
+		if ( ! file_exists( $path ) ) return;
+		if ( function_exists( 'get_runway_wp_filesystem' ) ) {
+			$wp_filesystem = get_runway_wp_filesystem();
+		} else {
+			if ( ! function_exists( 'WP_Filesystem' ) ) {
+				require_once( ABSPATH . 'wp-admin/includes/file.php' );
+			}
+
+			WP_Filesystem();
+			global $wp_filesystem;
+		}
+
+		$files = runway_scandir( $path );
+		foreach ( $files as $file ) {
+			if ( !in_array( $file, $exclude ) ) {
+				if ( is_dir( $path . '/' . $file ) ) {
+					$wp_filesystem->mkdir( apply_filters( 'rf_prepared_path', $path_in_tmp . '/' . $file ) );
+					$this->add_to_tmp_dir_r( $path . '/' . $file, $path_in_tmp . '/' . $file . '/', $exclude );
+				}
+				elseif ( is_file( $path . '/' . $file ) ) {
+					$wp_filesystem->copy(
+						apply_filters( 'rf_prepared_path', $path . '/' . $file ),
+						apply_filters( 'rf_prepared_path', $path_in_tmp . '/' . $file )
+					);
+				}
+			}
+		}
 	}
 
 	private function make_extension_loader( $extension ) {
