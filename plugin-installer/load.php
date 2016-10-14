@@ -85,16 +85,16 @@ function plugin_installer_report( $reports_object ) {
 
 	$plugins_dir = FRAMEWORK_DIR . 'extensions/plugin-installer/plugins/';
 	$reports_object->assign_report( array(
-		'source'          => 'Layouts Manager',
-		'report_key'      => 'layouts_dir_exists',
+		'source'          => __( 'Plugin Installer', 'runway' ),
+		'report_key'      => 'plugins_dir_exists',
 		'path'            => $plugins_dir,
 		'success_message' => sprintf( __( 'Plugin Installer directory (%s) is exists.', 'runway' ), $plugins_dir ),
 		'fail_message'    => sprintf( __( 'Plugin Installer directory (%s) is not exists.', 'runway' ), $plugins_dir ),
 	), 'DIR_EXISTS' );
 
 	$reports_object->assign_report( array(
-		'source'          => 'Layouts Manager',
-		'report_key'      => 'layouts_dir_writable',
+		'source'          => __( 'Plugin Installer', 'runway' ),
+		'report_key'      => 'plugins_dir_writable',
 		'path'            => $plugins_dir,
 		'success_message' => sprintf( __( 'Plugin Installer directory (%s) is writable.', 'runway' ), $plugins_dir ),
 		'fail_message'    => sprintf( __( 'Plugin Installer directory (%s) is not writable.', 'runway' ), $plugins_dir ),
