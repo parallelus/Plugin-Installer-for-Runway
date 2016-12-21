@@ -761,12 +761,23 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 					$install_link_count++;    // Increment the install link count
 					if ( current_user_can( 'install_plugins' ) ) {
 						if ( $plugin['required'] == 'true' ) {
-							$message['notice_can_install_required'][] = $plugin['name'];
-							$has_required                             = true;
+							/**
+							 * Filter whether to display the notice about plugin
+							 *
+							 * @param bool  $result  Whether to show the notice about plugin. Default true.
+							 * @param array $plugin  Plugin data.
+							 * @param bool  $required Whether the plugin is required. Default false.
+							 */
+							if ( apply_filters( 'rf_show_notice_can_install', true, $plugin, true ) ) {
+								$message['notice_can_install_required'][] = $plugin['name'];
+								$has_required                             = true;
+							}
 						} /** This plugin is only recommended */
 						else {
-							$message['notice_can_install_recommended'][] = $plugin['name'];
-							$has_recommended                             = true;
+							if ( apply_filters( 'rf_show_notice_can_install', true, $plugin, false ) ) {
+								$message['notice_can_install_recommended'][] = $plugin['name'];
+								$has_recommended                             = true;
+							}
 						}
 					} /** Need higher privileges to install the plugin */
 					else {
@@ -780,12 +791,23 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 					$activate_link_count++;   // Increment the activate link count
 					if ( current_user_can( 'activate_plugins' ) ) {
 						if ( ( isset( $plugin['required'] ) ) && ( $plugin['required'] == 'true' ) ) {
-							$message['notice_can_activate_required'][] = $plugin['name'];
-							$has_required                              = true;
+							/**
+							 * Filter whether to display the notice about plugin
+							 *
+							 * @param bool  $result  Whether to show the notice about plugin. Default true.
+							 * @param array $plugin  Plugin data.
+							 * @param bool  $required Whether the plugin is required. Default false.
+							 */
+							if ( apply_filters( 'rf_show_notice_can_activate', true, $plugin, true ) ) {
+								$message['notice_can_activate_required'][] = $plugin['name'];
+								$has_required                              = true;
+							}							
 						} /** This plugin is only recommended */
 						else {
-							$message['notice_can_activate_recommended'][] = $plugin['name'];
-							$has_recommended                              = true;
+							if ( apply_filters( 'rf_show_notice_can_activate', true, $plugin, false ) ) {
+								$message['notice_can_activate_recommended'][] = $plugin['name'];
+								$has_recommended                              = true;
+							}
 						}
 					} /** Need higher privileges to activate the plugin */
 					else {
