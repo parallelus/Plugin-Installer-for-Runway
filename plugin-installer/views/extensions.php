@@ -1,4 +1,5 @@
 <form action="<?php echo esc_url( $this->self_url( 'extensions' ) . '&action=install-extension' ); ?>" method="post">
+	<?php wp_nonce_field( 'install-extension', 'install-extension' ); ?>
 	<br>
 	<table class="wp-list-table widefat plugins">
 		<thead>

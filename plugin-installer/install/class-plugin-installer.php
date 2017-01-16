@@ -359,6 +359,7 @@ if ( ! class_exists( 'Runway_Plugin_Installer' ) ) {
 			if ( isset( $_POST ) ) {
 				$plugin_options_saved = $plugin_installer_admin->plugin_installer_options;
 				if ( isset( $_POST[ sanitize_key( 'plugin_options' ) ] ) && isset( $_POST[ sanitize_key( 'action_save' ) ] ) ) {
+					check_admin_referer( 'bulk-plugins' );
 					foreach ( $_POST[ sanitize_key( 'action_save' ) ] as $key => $value ) {
 						if ( $value == 'save' ) {
 							$action_save = true;

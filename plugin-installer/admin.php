@@ -51,12 +51,22 @@ switch ( $action ) {
 		break;
 
 	case 'activate':
+		if ( ! isset( $_REQUEST['tgmpa-activate-nonce'] ) || ! wp_verify_nonce( $_REQUEST['tgmpa-activate-nonce'], 'tgmpa-activate' ) ) {
+			print __( 'Sorry, your nonce did not verify.', 'runway' );
+			exit;
+		}
+
 		$rpi_class->do_plugin_activate();
 		echo $redirect; // escaped above
 
 		break;
 
 	case 'delete-from-list':
+		if ( ! isset( $_REQUEST['tgmpa-delete-nonce'] ) || ! wp_verify_nonce( $_REQUEST['tgmpa-delete-nonce'], 'tgmpa-delete' ) ) {
+			print __( 'Sorry, your nonce did not verify.', 'runway' );
+			exit;
+		}
+		
 		if ( isset( $_GET['plugin_source'] ) && isset( $_GET['plugin_name'] ) && isset( $_GET['plugin'] ) ) {
 			$plugin_info = array(
 				'name'   => $_GET['plugin_name'],
@@ -70,6 +80,11 @@ switch ( $action ) {
 		break;
 
 	case 'install-extension':
+		if ( ! isset( $_REQUEST['install-extension'] ) || ! wp_verify_nonce( $_REQUEST['install-extension'], 'install-extension' ) ) {
+			print __( 'Sorry, your nonce did not verify.', 'runway' );
+			exit;
+		}
+
 		$extensions = $_POST['ext_chk'];
 		if ( $extensions[0] == 'on' ) {
 			unset( $extensions[0] );

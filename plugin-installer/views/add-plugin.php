@@ -24,6 +24,7 @@ if ( isset( $info_message ) && $info_message != "" ) {
 <h2><?php _e( 'Select a Plugin from the WordPress Repository', 'runway' ); ?></h2>
 
 <form method="post" action="<?php echo self_admin_url( 'admin.php?page=plugin-installer&navigation=add-plugin-by-url' ); ?>">
+	<?php wp_nonce_field( 'plugin-by-url-action', 'plugin-by-url-field' ) ?>
 	<p class="install-help"><?php _e( 'Plugin URL', 'runway' ) ?></p>
 	<input type="text" id="plugin_url" name="plugin_url"/>
 	<input type="submit" class="button" value="<?php _e( 'Select Plugin', 'runway' ); ?>" name="plugin_url_submit"/>

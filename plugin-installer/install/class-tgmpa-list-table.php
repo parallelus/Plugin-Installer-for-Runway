@@ -289,8 +289,8 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 										'plugin'               => $item['slug'],
 										'plugin_name'          => $item['sanitized_plugin'],
 										'plugin_source'        => $item['url'],
-										'tgmpa-activate'       => 'activate-plugin',
-										'tgmpa-activate-nonce' => wp_create_nonce( 'tgmpa-activate' ),
+//										'tgmpa-activate'       => 'activate-plugin',
+										'tgmpa-delete-nonce'   => wp_create_nonce( 'tgmpa-delete' ),
 									),
 									admin_url( Runway_Plugin_Installer::$instance->parent_url_general_slug )
 								)

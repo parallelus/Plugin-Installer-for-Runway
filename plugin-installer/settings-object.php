@@ -94,6 +94,11 @@ class Plugin_Installer_Admin_Object extends Runway_Admin_Object {
 			$plugin_installer_admin->navigation = $_REQUEST['navigation'];
 
 			if ( $plugin_installer_admin->navigation == 'add-plugin-by-url' ) {
+				if ( empty( $_POST ) || ! wp_verify_nonce( $_POST['plugin-by-url-field'], 'plugin-by-url-action' ) ) {
+					print __( 'Sorry, your nonce did not verify.', 'runway' );
+					exit;
+				}
+
 				$parsed_url = parse_url( $_POST['plugin_url'] );
 
 				if ( ! filter_var( $_POST['plugin_url'], FILTER_VALIDATE_URL ) || ! isset( $parsed_url['host'] ) || ( isset( $parsed_url['host'] ) && $parsed_url['host'] != 'wordpress.org' ) ) {
