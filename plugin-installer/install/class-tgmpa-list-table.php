@@ -332,7 +332,7 @@ if ( ! class_exists( 'TGMPA_List_Table' ) ) {
 
 		public function column_type( $item ) {
 			global $plugin_installer_admin;
-
+            $type = '';
 			$plugin_options_saved = $plugin_installer_admin->get_options();
 			$needs                = array(
 				'Required'    => 'true',
