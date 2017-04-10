@@ -12,4 +12,9 @@
 
     });
 
+    $.each($('.plugin .install a'),function( i, val ) {
+        var href = $(val).attr('href').replace('#8211;%20','&');
+        $(val).attr('href',href);
+    });
+
 })(jQuery);
