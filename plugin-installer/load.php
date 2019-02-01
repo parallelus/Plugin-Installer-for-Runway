@@ -2,7 +2,7 @@
 /*
     Extension Name: Plugin Installer
     Extension URI: https://github.com/parallelus/Plugin-Installer-for-Runway
-    Version: 0.9.8
+    Version: 0.9.9
     Description: Package and auto-install plugins with themes.
     Author: Parallelus
     Author URI: http://runwaywp.com
