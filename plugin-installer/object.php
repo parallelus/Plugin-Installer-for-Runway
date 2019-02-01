@@ -127,7 +127,8 @@ class Plugin_Installer_Object extends Runway_Object {
 						if ( ! is_wp_error( $response ) ) {
 							$plugin_wp = unserialize( wp_remote_retrieve_body( $response ) );
 							if ( ! is_object( $plugin_wp ) ) {
-								echo '<div class="error"><p>' . __( 'An error has occurred', 'runway' ) . '</p></div>';
+								// echo '<div class="error"><p>' . __( 'An error has occurred', 'runway' ) . '</p></div>';
+								new WP_Error( 'plugin_installer_request_fail', __( "An error occurred contacting the WordPress plugin repository API.", "runway" ) );
 							} else {
 								if ( $plugin_wp ) {
 									$plugin_index = array_search( $slug . '/', $plugin_slug_installed );
@@ -140,7 +141,8 @@ class Plugin_Installer_Object extends Runway_Object {
 								}
 							}
 						} else {
-							echo '<div class="error"><p>' . __( 'An error has occurred', 'runway' ) . '</p></div>';
+							// echo '<div class="error"><p>' . __( 'An error has occurred', 'runway' ) . '</p></div>';
+							new WP_Error( 'plugin_installer_request_fail', __( "An error occurred contacting the WordPress plugin repository API.", "runway" ) );
 						}
 
 					}
